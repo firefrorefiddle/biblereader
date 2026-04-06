@@ -7,22 +7,23 @@ defmodule BibleReaderWeb.BibleLiveTest do
   alias BibleReader.ScriptureFixtures
 
   setup %{conn: conn} do
-    ScriptureFixtures.book_and_chapter_fixture()
+    %{chapter: chapter} = ScriptureFixtures.book_and_chapter_fixture()
     user = user_fixture()
-    %{conn: log_in_user(conn, user)}
+    %{conn: log_in_user(conn, user), chapter_id: chapter.id}
   end
 
-  test "lists stats and log read", %{conn: conn} do
+  test "lists stats and log read", %{conn: conn, chapter_id: chapter_id} do
     {:ok, lv, html} = live(conn, ~p"/read")
 
+    assert html =~ "Bible reading record"
     assert html =~ "Reading stats"
     assert html =~ "Rolling window"
 
     lv
-    |> element("button", "Log read")
+    |> element("button[phx-value-chapter-id=\"#{chapter_id}\"]")
     |> render_click()
 
     html = render(lv)
-    assert html =~ "1×"
+    assert html =~ "×1"
   end
 end

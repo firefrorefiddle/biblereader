@@ -3,3 +3,15 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+
+/* Bible reading record: keep cell highlights when printing */
+@media print {
+  .reading-record button {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .reading-record section {
+    break-inside: avoid;
+  }
+}

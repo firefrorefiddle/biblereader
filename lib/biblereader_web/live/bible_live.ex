@@ -11,9 +11,18 @@ defmodule BibleReaderWeb.BibleLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-4xl px-4 py-8">
+    <div class="reading-record px-1 py-6 sm:px-2">
+      <div class="mb-6 border-b border-zinc-200 pb-4">
+        <h1 class="font-serif text-2xl font-semibold tracking-tight text-zinc-900">
+          Bible reading record
+        </h1>
+        <p class="mt-1 text-sm text-zinc-600">
+          Click a chapter number to log a read (paper-style chart). Highlighted cells have been read at least once.
+        </p>
+      </div>
+
       <div class="mb-8 rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-800">
-        <h2 class="text-lg font-semibold text-zinc-900">Reading stats</h2>
+        <h2 class="text-base font-semibold text-zinc-900">Reading stats</h2>
         <p class="mt-2">
           Rolling window: <span class="font-medium">{@stats.rolling_days}</span> days.
           Chapters logged in window: <span class="font-medium">{@stats.chapters_read_in_window}</span>.
@@ -37,37 +46,50 @@ defmodule BibleReaderWeb.BibleLive do
         for={@prefs_form}
         id="prefs-form"
         phx-change="update_prefs"
-        class="mb-6 flex flex-wrap items-center gap-4"
+        class="mb-8 flex flex-wrap items-center gap-4 border-b border-zinc-100 pb-6"
       >
-        <label class="flex items-center gap-2 text-sm">
+        <label class="flex items-center gap-2 text-sm text-zinc-700">
           <.input field={@prefs_form[:show_apocrypha]} type="checkbox" />
           Show apocryphal / deuterocanonical books
         </label>
       </.form>
 
-      <div class="space-y-2">
+      <div class="space-y-10 print:space-y-8">
         <%= for book_row <- @book_rows do %>
-          <details class="group rounded border border-zinc-200 open:bg-zinc-50">
-            <summary class="cursor-pointer px-3 py-2 font-medium text-zinc-900">
+          <section class="break-inside-avoid">
+            <h2 class="mb-2 font-serif text-lg font-semibold text-zinc-900">
               {book_row.book.name}
-            </summary>
-            <ul class="grid grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] gap-2 px-3 pb-3">
+            </h2>
+            <%!-- Dense chapter grid: rows wrap like a printed reading chart (~20 chapters per row on wide screens) --%>
+            <div class="inline-grid max-w-full gap-px rounded-sm border border-zinc-300 bg-white p-px [grid-template-columns:repeat(auto-fill,minmax(2rem,2.75rem))]">
               <%= for ch <- book_row.chapters do %>
-                <li class="flex items-center justify-between gap-2 rounded border border-zinc-100 bg-white px-2 py-1 text-sm">
-                  <span class="tabular-nums">Ch. {ch.number}</span>
-                  <span class="text-zinc-500" title="Times read">{ch.read_count}×</span>
-                  <button
-                    type="button"
-                    phx-click="log_read"
-                    phx-value-chapter-id={ch.id}
-                    class="rounded bg-emerald-700 px-2 py-0.5 text-xs font-medium text-white hover:bg-emerald-800"
+                <button
+                  type="button"
+                  phx-click="log_read"
+                  phx-value-chapter-id={ch.id}
+                  title={"#{book_row.book.name} #{ch.number} — #{ch.read_count} read(s). Click to log another read."}
+                  aria-label={"Log a read for #{book_row.book.name} chapter #{ch.number}, #{ch.read_count} times so far"}
+                  class={[
+                    "relative flex min-h-[2rem] min-w-[2rem] flex-col items-center justify-center border px-0.5 py-0.5 text-[11px] font-medium tabular-nums leading-none transition sm:min-h-[2.125rem] sm:min-w-[2.125rem] sm:text-xs",
+                    if(ch.read_count > 0,
+                      do:
+                        "border-emerald-600 bg-emerald-100 text-emerald-950 hover:bg-emerald-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-emerald-700",
+                      else:
+                        "border-zinc-300 bg-white text-zinc-900 hover:border-emerald-500 hover:bg-emerald-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-emerald-600"
+                    )
+                  ]}
+                >
+                  <span>{ch.number}</span>
+                  <span
+                    :if={ch.read_count > 0}
+                    class="mt-0.5 text-[9px] font-semibold leading-none text-emerald-800"
                   >
-                    Log read
-                  </button>
-                </li>
+                    ×{ch.read_count}
+                  </span>
+                </button>
               <% end %>
-            </ul>
-          </details>
+            </div>
+          </section>
         <% end %>
       </div>
     </div>
