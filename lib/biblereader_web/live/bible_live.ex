@@ -1,0 +1,148 @@
+defmodule BibleReaderWeb.BibleLive do
+  @moduledoc """
+  Authenticated view of the chapter catalog with read logging and rolling-window stats.
+  """
+  use BibleReaderWeb, :live_view
+
+  alias BibleReader.Accounts
+  alias BibleReader.ReadingPlan
+  alias BibleReader.Scripture
+
+  @impl true
+  def render(assigns) do
+    ~H"""
+    <div class="mx-auto max-w-4xl px-4 py-8">
+      <div class="mb-8 rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-800">
+        <h2 class="text-lg font-semibold text-zinc-900">Reading stats</h2>
+        <p class="mt-2">
+          Rolling window: <span class="font-medium">{@stats.rolling_days}</span> days.
+          Chapters logged in window: <span class="font-medium">{@stats.chapters_read_in_window}</span>.
+          Avg / day: <span class="font-medium">{Float.round(@stats.avg_chapters_per_day_in_window, 2)}</span>.
+        </p>
+        <p class="mt-1">
+          Distinct chapters read at least once (in scope):
+          <span class="font-medium">{@stats.distinct_chapters_read_at_least_once}</span>
+          / {@stats.total_chapters_in_scope}.
+        </p>
+        <p :if={@stats.estimated_days_to_first_complete} class="mt-1">
+          Estimated days to touch every chapter in scope at least once (at current pace):
+          <span class="font-medium">{@stats.estimated_days_to_first_complete}</span>
+        </p>
+        <p :if={is_nil(@stats.estimated_days_to_first_complete)} class="mt-1 text-zinc-600">
+          ETA unavailable until you log reads in the current window (pace is zero).
+        </p>
+      </div>
+
+      <.form
+        for={@prefs_form}
+        id="prefs-form"
+        phx-change="update_prefs"
+        class="mb-6 flex flex-wrap items-center gap-4"
+      >
+        <label class="flex items-center gap-2 text-sm">
+          <.input field={@prefs_form[:show_apocrypha]} type="checkbox" />
+          Show apocryphal / deuterocanonical books
+        </label>
+      </.form>
+
+      <div class="space-y-2">
+        <%= for book_row <- @book_rows do %>
+          <details class="group rounded border border-zinc-200 open:bg-zinc-50">
+            <summary class="cursor-pointer px-3 py-2 font-medium text-zinc-900">
+              {book_row.book.name}
+            </summary>
+            <ul class="grid grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] gap-2 px-3 pb-3">
+              <%= for ch <- book_row.chapters do %>
+                <li class="flex items-center justify-between gap-2 rounded border border-zinc-100 bg-white px-2 py-1 text-sm">
+                  <span class="tabular-nums">Ch. {ch.number}</span>
+                  <span class="text-zinc-500" title="Times read">{ch.read_count}×</span>
+                  <button
+                    type="button"
+                    phx-click="log_read"
+                    phx-value-chapter-id={ch.id}
+                    class="rounded bg-emerald-700 px-2 py-0.5 text-xs font-medium text-white hover:bg-emerald-800"
+                  >
+                    Log read
+                  </button>
+                </li>
+              <% end %>
+            </ul>
+          </details>
+        <% end %>
+      </div>
+    </div>
+    """
+  end
+
+  @impl true
+  def mount(_params, _session, socket) do
+    {:ok, load_page(socket)}
+  end
+
+  defp load_page(socket) do
+    user = Accounts.get_user!(socket.assigns.current_user.id)
+    stats = ReadingPlan.stats_for_user(user)
+    book_rows = build_book_rows(user)
+    prefs_form = to_form(%{"show_apocrypha" => user.show_apocrypha}, as: :prefs)
+
+    socket
+    |> assign(:stats, stats)
+    |> assign(:book_rows, book_rows)
+    |> assign(:prefs_form, prefs_form)
+  end
+
+  defp build_book_rows(user) do
+    counts = ReadingPlan.read_counts_by_chapter_id(user.id)
+
+    user
+    |> Scripture.list_books_for_user()
+    |> Enum.map(fn book ->
+      chapters =
+        book.id
+        |> Scripture.list_chapters_for_book()
+        |> Enum.map(fn ch ->
+          %{
+            id: ch.id,
+            number: ch.chapter_number,
+            read_count: Map.get(counts, ch.id, 0)
+          }
+        end)
+
+      %{book: book, chapters: chapters}
+    end)
+  end
+
+  @impl true
+  def handle_event("log_read", %{"chapter-id" => id}, socket) do
+    chapter_id = String.to_integer(id)
+
+    case ReadingPlan.log_chapter_read(socket.assigns.current_user, chapter_id) do
+      {:ok, _} ->
+        {:noreply, load_page(socket)}
+
+      {:error, _} ->
+        {:noreply, put_flash(socket, :error, "Could not log read.")}
+    end
+  end
+
+  def handle_event("update_prefs", params, socket) do
+    show =
+      case get_in(params, ["prefs", "show_apocrypha"]) do
+        "true" -> true
+        _ -> false
+      end
+
+    case Accounts.update_user_reading_profile(socket.assigns.current_user, %{show_apocrypha: show}) do
+      {:ok, user} ->
+        socket =
+          socket
+          |> assign(:current_user, user)
+          |> load_page()
+
+        {:noreply, socket}
+
+      {:error, %Ecto.Changeset{}} ->
+        {:noreply, put_flash(socket, :error, "Could not update preferences.")}
+    end
+  end
+end
