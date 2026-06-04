@@ -67,7 +67,9 @@ defmodule BibleReaderWeb.Router do
 
     live_session :require_authenticated_user,
       on_mount: [{BibleReaderWeb.UserAuth, :ensure_authenticated}] do
-      live "/read", BibleLive, :index
+      live "/read", ReadingHomeLive, :index
+      live "/read/books/:book_code", BookLive, :show
+      live "/read/books/:book_code/:chapter", ChapterLive, :show
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
     end

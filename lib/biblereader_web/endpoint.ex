@@ -22,7 +22,7 @@ defmodule BibleReaderWeb.Endpoint do
   plug Plug.Static,
     at: "/",
     from: :biblereader,
-    gzip: false,
+    gzip: Mix.env() == :prod,
     only: BibleReaderWeb.static_paths()
 
   # Code reloading can be explicitly enabled under the

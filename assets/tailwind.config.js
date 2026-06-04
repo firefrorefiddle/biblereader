@@ -15,6 +15,13 @@ module.exports = {
     extend: {
       colors: {
         brand: "#FD4F00",
+        surface: "#faf8f5",
+        card: "#ffffff",
+        primary: {
+          DEFAULT: "#2d5a4a",
+          muted: "#e8f0ed",
+        },
+        accent: "#c9a227",
       }
     },
   },

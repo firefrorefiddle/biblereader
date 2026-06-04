@@ -1,0 +1,17 @@
+[Unit]
+Description=Bible Reader (Phoenix LiveView)
+After=network.target
+
+[Service]
+Type=exec
+WorkingDirectory=%h/biblereader
+Environment=PHX_SERVER=true
+Environment=PORT=4000
+Environment=MIX_ENV=prod
+EnvironmentFile=-%h/biblereader/.env.production
+ExecStart=%h/biblereader/bin/biblereader start
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target

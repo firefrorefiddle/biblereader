@@ -6,6 +6,7 @@
 
 /* Bible reading record: keep cell highlights when printing */
 @media print {
+  .reading-record a,
   .reading-record button {
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;

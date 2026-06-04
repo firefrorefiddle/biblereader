@@ -1,0 +1,5 @@
+# Copy to `.envrc` (ignored by git) and set your values. Used by `deploy/deploy.sh`.
+export SERVER="152.53.251.51"
+export DOMAIN="biblereader.upscale-automation.com"
+# optional: export DEPLOY_USER=your_ssh_user
+# optional: export APP_DIR=/home/your_ssh_user/biblereader

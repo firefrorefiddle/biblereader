@@ -89,6 +89,8 @@ defmodule BibleReaderWeb do
       import Phoenix.HTML
       # Core UI components
       import BibleReaderWeb.CoreComponents
+      import BibleReaderWeb.ReadingComponents
+      import BibleReaderWeb.ScriptureComponents
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS

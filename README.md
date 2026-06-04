@@ -21,7 +21,15 @@ mix run priv/repo/seeds.exs
 
 Or: `mix setup` (runs `ecto.setup`, which includes `seeds.exs`).
 
-3. Start the server:
+3. **Optional:** import Elberfelder Bible text from USFM (requires `deuelbbk_usfm.zip` in the project root):
+
+```bash
+mix scripture.import deuelbbk
+```
+
+This extracts USFM to `priv/scripture/usfm/deuelbbk/` (gitignored) and loads verses, footnotes, and chapter documents into PostgreSQL. Without this step, chapter pages still work for logging reads and notes, but show an import hint instead of scripture text.
+
+4. Start the server:
 
 ```bash
 mix phx.server
@@ -34,6 +42,49 @@ Visit [http://localhost:4000](http://localhost:4000), register an account, then 
 ```bash
 mix test
 ```
+
+## Deployment (production)
+
+Production runs on the same VM as **songbook-oc** and **gtd** (`152.53.251.51`): user-level **systemd**, **nginx** TLS, app on **`127.0.0.1:4000`**, public URL **`https://biblereader.upscale-automation.com`**.
+
+### One-time server setup
+
+1. **DNS**: Point `biblereader.upscale-automation.com` A/AAAA at the server.
+
+2. **PostgreSQL** on the VM (localhost only). The shared host may not have Podman; use whichever applies:
+
+   - **Podman** (if installed): `export PG_PASSWORD="$(openssl rand -hex 24)"` then `bash deploy/server-setup-postgres.sh` on the server.
+   - **Otherwise** (requires sudo): follow the apt/PostgreSQL instructions printed when the script exits without Podman, or install PostgreSQL 16 and create role `biblereader` / database `biblereader_prod` matching `DATABASE_URL` in `.env.production`.
+
+   Copy the final `DATABASE_URL` into `.env.production` on your workstation (must match the password you set on the server).
+
+3. **Secrets**: Copy [`.env.production.example`](.env.production.example) to **`.env.production`**, set `SECRET_KEY_BASE` (`mix phx.gen.secret`), `DATABASE_URL`, and Mailgun vars (same EU account as songbook-oc: `MAILGUN_*`, `MAIL_FROM`).
+
+4. **Deploy credentials**: Copy [`.envrc.example`](.envrc.example) to **`.envrc`** with `SERVER` and `DOMAIN`.
+
+5. **Nginx**: Install [`deploy/nginx-biblereader.upscale-automation.com.conf`](deploy/nginx-biblereader.upscale-automation.com.conf) under `/etc/nginx/sites-available/`, enable, test, reload.
+
+6. **TLS**: `sudo certbot --nginx -d biblereader.upscale-automation.com`
+
+7. **User lingering** (if services stop after SSH logout): `loginctl enable-linger "$USER"`
+
+### Deploy from your workstation
+
+```bash
+chmod +x deploy/deploy.sh
+./deploy/deploy.sh --seed   # first deploy: migrate + seed catalog
+./deploy/deploy.sh          # later deploys: build release, rsync, migrate, restart
+```
+
+Logs: `./deploy/deploy.sh --logs`
+
+### Verification
+
+```bash
+curl -sI https://biblereader.upscale-automation.com/
+```
+
+Register, log in, open `/read`, and confirm LiveView works over HTTPS. Password-reset email should use links on `biblereader.upscale-automation.com` (Mailgun EU).
 
 ## Learn more
 

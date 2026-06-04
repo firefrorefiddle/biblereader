@@ -24,6 +24,30 @@ defmodule BibleReader.Scripture do
   end
 
   @doc """
+  Returns a book by stable `code`, or `nil`.
+  """
+  def get_book_by_code(book_code) when is_binary(book_code) do
+    Repo.get_by(Book, code: book_code)
+  end
+
+  @doc """
+  Returns the book if visible to this user (canon/apocrypha rules), else `nil`.
+  """
+  def get_book_for_user(%BibleReader.Accounts.User{} = user, book_code)
+      when is_binary(book_code) do
+    case get_book_by_code(book_code) do
+      %Book{in_protestant_canon: true} = book ->
+        book
+
+      %Book{in_apocrypha: true} = book ->
+        if user.show_apocrypha, do: book, else: nil
+
+      nil ->
+        nil
+    end
+  end
+
+  @doc """
   All chapters for a book (by id), ordered by chapter number.
   """
   def list_chapters_for_book(book_id) do

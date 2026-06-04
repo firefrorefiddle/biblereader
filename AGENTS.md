@@ -76,7 +76,7 @@ This document orients AI assistants and human contributors to how we build **Bib
 - **Timezone:** **profile-stored timezone** (IANA name, e.g. `Europe/Berlin`) drives any **calendar-day** grouping (if used beside rolling windows); store instants in UTC, convert for display and bucketing.  
 - **Tenancy:** single-user namespace (`user_id` scopes all mutable data); no org/tenant column until a product need is defined—avoids speculative schema.  
 - **Locale:** English UI and book names in seeds first; add Gettext / translated names when i18n becomes a requirement.  
-- **Scripture text:** v1 does **not** store copyrighted Bible text; chapter lists and read logs only. Ingesting verse text later requires a documented license/source policy.  
+- **Scripture text:** optional **licensed import** via USFM (see `ScriptureText` context). USFM archives stay on disk (`deuelbbk_usfm.zip` → `priv/scripture/usfm/`); the app reads **normalized JSON** in PostgreSQL (`chapter_documents`, `bible_verses`, `bible_footnotes`). User notes/highlights remain overlays, not edits to source text. Do not redistribute copyrighted text beyond documented license terms.
 - **Onboarding:** v1 can be minimal; **planned onboarding tour** is a later milestone (see product decisions).
 
 ---
@@ -194,6 +194,10 @@ podman run -d \
 - **Stopping / starting:** `podman stop postgres-dev` / `podman start postgres-dev`.  
 - **Production:** use a managed Postgres or a properly secured deployment—**never** reuse these credentials.
 
+### Production deployment (shared VM)
+
+Deploy matches **gtd** / **songbook-oc** on `152.53.251.51`: [`deploy/deploy.sh`](deploy/deploy.sh) builds a **`mix release`** locally, rsyncs to `~/biblereader`, runs **`bin/migrate`**, user **systemd** on port **4000**, **nginx** → `biblereader.upscale-automation.com`. Postgres on the VM is a **Podman** container (`deploy/server-setup-postgres.sh`); do not reuse local dev credentials. Mail: **Swoosh Mailgun** (EU), same domain as songbook (`MAILGUN_*` in `.env.production`). See **README § Deployment**.
+
 ### Developer experience
 
 - Run **`mix format`** on every change; consider **Credo** (style) and **Dialyxir** (types) as the project matures. Once added to the project, **Credo** and **`mix test`** are part of **Definition of Done** (below).
@@ -233,7 +237,9 @@ Each row is complete only when it satisfies **[Definition of Done](#definition-o
 - [x] Phoenix app with LiveView and PostgreSQL configured  
 - [x] Seeded scripture catalog: **Protestant 66** by default; **apocrypha** in data with **user toggle** to show  
 - [x] **Auth required**; user profile includes **timezone** (IANA) for stats  
-- [x] User can **log a chapter read** (append-only events); UI shows **read count** (or equivalent) per chapter  
+- [x] User can **log a chapter read** (append-only events); UI shows **read count** (or equivalent) per chapter 
+- [x] **Reading workflow UI**: home dashboard (`/read`), book chapter grid (`/read/books/:code`), chapter view with notes (`/read/books/:code/:n`) 
+- [x] **Scripture text (optional import):** USFM → normalized DB; chapter view renders text + footnotes when `mix scripture.import deuelbbk` has been run 
 - [x] Stats: **rolling-window** pace / activity; ETA-style metrics derived from documented formulas  
 - [x] Privacy policy link + honest description of session/essential cookies; GDPR-minded data handling  
 - [x] Tests for context logic and main LiveView interactions  
@@ -242,7 +248,7 @@ Each row is complete only when it satisfies **[Definition of Done](#definition-o
 
 ## Out of scope for first iteration
 
-- Full verse-level text (licensing, UX, search)—track at chapter granularity unless product changes  
+- Full verse-level text (licensing, UX, search)—**basic import + footnotes** supported via `ScriptureText`; apocrypha text, cross-refs, Strong’s, morphology still later 
 - Mobile apps (web-first responsive LiveView)  
 - Heavy social features—design hooks only (user ids, timestamps) where they don’t slow v1  
 
