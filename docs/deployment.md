@@ -195,7 +195,7 @@ Functional checks:
 | `PHX_SERVER` | Set in systemd | `true` — enables HTTP server in release |
 | `MAILGUN_API_KEY` | Yes | Production mail |
 | `MAILGUN_DOMAIN` | Yes | e.g. `mg.upscale-automation.com` |
-| `MAILGUN_BASE_URL` | No | Default `https://api.eu.mailgun.net` |
+| `MAILGUN_BASE_URL` | No | Same host as songbook-oc (`https://api.eu.mailgun.net`); app appends `/v3` for Swoosh |
 | `MAIL_FROM` | Yes | e.g. `BibleReader <postmaster@mg.upscale-automation.com>` |
 
 Loaded from **`~/biblereader/.env.production`** (systemd `EnvironmentFile` and `deploy.sh` migrate/seed commands).
@@ -209,6 +209,7 @@ Loaded from **`~/biblereader/.env.production`** (systemd `EnvironmentFile` and `
 | `mix release` prompts Overwrite? | Old release dir | Script uses `--overwrite`; run `./deploy/deploy.sh` not bare `mix release` |
 | LiveView disconnects | Nginx WebSocket | Use repo nginx snippet; check `proxy_read_timeout` |
 | Email links point to `example.com` | `PHX_HOST` | Set `PHX_HOST=biblereader.upscale-automation.com` in `.env.production` |
+| Registration crashes after submit; log `404 page not found` on mail | `MAILGUN_BASE_URL` missing `/v3` for Swoosh | Copy `MAILGUN_*` from songbook-oc; deploy a build with current `config/runtime.exs` (auto-appends `/v3`) |
 | Service inactive after logout | No lingering | `loginctl enable-linger "$USER"` |
 
 ## Related files

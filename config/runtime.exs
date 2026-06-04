@@ -67,9 +67,22 @@ if config_env() == :prod do
     System.get_env("MAILGUN_DOMAIN") ||
       raise "environment variable MAILGUN_DOMAIN is missing."
 
+  # Swoosh builds …/v3/{domain}/messages. songbook-oc adds /v3 in app code; reuse the same
+  # MAILGUN_BASE_URL as songbook (host only) and append /v3 here when missing.
+  mailgun_base_url =
+    (System.get_env("MAILGUN_BASE_URL") || "https://api.eu.mailgun.net")
+    |> String.trim_trailing("/")
+
+  mailgun_base_url =
+    if String.ends_with?(mailgun_base_url, "/v3") do
+      mailgun_base_url
+    else
+      mailgun_base_url <> "/v3"
+    end
+
   config :biblereader, BibleReader.Mailer,
     adapter: Swoosh.Adapters.Mailgun,
     api_key: mailgun_api_key,
     domain: mailgun_domain,
-    base_url: System.get_env("MAILGUN_BASE_URL") || "https://api.eu.mailgun.net"
+    base_url: mailgun_base_url
 end
