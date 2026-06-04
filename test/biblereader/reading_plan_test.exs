@@ -102,7 +102,7 @@ defmodule BibleReader.ReadingPlanTest do
 
   test "RelativeTime label today", %{user: user} do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
-    assert RelativeTime.label(now, user.timezone) == "today"
+    assert RelativeTime.label(now, user.timezone) == :today
   end
 
   test "age_bucket unread", %{user: user} do

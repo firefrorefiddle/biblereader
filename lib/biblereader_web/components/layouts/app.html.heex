@@ -2,22 +2,52 @@
   <div class="flex items-center justify-between border-b border-zinc-100 py-3 text-sm">
     <div class="flex items-center gap-4">
       <a href={~p"/"} class="font-semibold text-zinc-900 hover:text-zinc-700">
-        Bible Reader
+        {gettext("Bible Reader")}
       </a>
       <%= if @current_user do %>
-        <.link navigate={~p"/read"} class="text-zinc-700 hover:text-zinc-900">Home</.link>
+        <.link navigate={~p"/read"} class="text-zinc-700 hover:text-zinc-900">
+          {gettext("Home")}
+        </.link>
       <% end %>
     </div>
     <div class="flex items-center gap-4 font-medium leading-6 text-zinc-700">
-      <.link navigate={~p"/privacy"} class="hover:text-zinc-900">Privacy</.link>
+      <nav class="flex items-center gap-1 rounded-full border border-zinc-200 p-0.5 text-xs">
+        <a
+          href={
+            BibleReaderWeb.Locale.switch_path("en", Map.get(assigns, :locale_return_to, "/read"))
+          }
+          class={[
+            "rounded-full px-2 py-0.5",
+            if(@locale == "en", do: "bg-primary text-white", else: "hover:bg-zinc-100")
+          ]}
+        >
+          EN
+        </a>
+        <a
+          href={
+            BibleReaderWeb.Locale.switch_path("de", Map.get(assigns, :locale_return_to, "/read"))
+          }
+          class={[
+            "rounded-full px-2 py-0.5",
+            if(@locale == "de", do: "bg-primary text-white", else: "hover:bg-zinc-100")
+          ]}
+        >
+          DE
+        </a>
+      </nav>
+      <.link navigate={~p"/privacy"} class="hover:text-zinc-900">{gettext("Privacy")}</.link>
       <%= if @current_user do %>
         <span class="hidden text-zinc-500 sm:inline">{@current_user.email}</span>
-        <.link navigate={~p"/users/settings"} class="hover:text-zinc-900">Settings</.link>
+        <.link navigate={~p"/users/settings"} class="hover:text-zinc-900">
+          {gettext("Settings")}
+        </.link>
         <.link href={~p"/users/log_out"} method="delete" class="hover:text-zinc-900">
-          Log out
+          {gettext("Log out")}
         </.link>
       <% else %>
-        <.link navigate={~p"/users/log_in"} class="hover:text-zinc-900">Log in</.link>
+        <.link navigate={~p"/users/log_in"} class="hover:text-zinc-900">
+          {gettext("Log in")}
+        </.link>
       <% end %>
     </div>
   </div>

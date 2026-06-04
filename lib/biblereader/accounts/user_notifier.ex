@@ -1,6 +1,9 @@
 defmodule BibleReader.Accounts.UserNotifier do
   import Swoosh.Email
 
+  use Gettext, backend: BibleReaderWeb.Gettext
+
+  alias BibleReader.Locale, as: AppLocale
   alias BibleReader.Mailer
 
   defp mail_from do
@@ -16,7 +19,6 @@ defmodule BibleReader.Accounts.UserNotifier do
     end
   end
 
-  # Delivers the email using the application mailer.
   defp deliver(recipient, subject, body) do
     email =
       new()
@@ -30,63 +32,75 @@ defmodule BibleReader.Accounts.UserNotifier do
     end
   end
 
+  defp with_user_locale(%{locale: locale}, fun) when is_function(fun, 0) do
+    Gettext.with_locale(BibleReaderWeb.Gettext, AppLocale.normalize(locale), fun)
+  end
+
+  defp with_user_locale(_user, fun), do: Gettext.with_locale(BibleReaderWeb.Gettext, "en", fun)
+
   @doc """
   Deliver instructions to confirm account.
   """
   def deliver_confirmation_instructions(user, url) do
-    deliver(user.email, "Confirmation instructions", """
+    with_user_locale(user, fn ->
+      deliver(user.email, gettext("Confirmation instructions"), """
 
-    ==============================
+      ==============================
 
-    Hi #{user.email},
+      #{gettext("Hi %{email},", email: user.email)}
 
-    You can confirm your account by visiting the URL below:
+      #{gettext("You can confirm your account by visiting the URL below:")}
 
-    #{url}
+      #{url}
 
-    If you didn't create an account with us, please ignore this.
+      #{gettext("If you didn't create an account with us, please ignore this.")}
 
-    ==============================
-    """)
+      ==============================
+      """)
+    end)
   end
 
   @doc """
   Deliver instructions to reset a user password.
   """
   def deliver_reset_password_instructions(user, url) do
-    deliver(user.email, "Reset password instructions", """
+    with_user_locale(user, fn ->
+      deliver(user.email, gettext("Reset password instructions"), """
 
-    ==============================
+      ==============================
 
-    Hi #{user.email},
+      #{gettext("Hi %{email},", email: user.email)}
 
-    You can reset your password by visiting the URL below:
+      #{gettext("You can reset your password by visiting the URL below:")}
 
-    #{url}
+      #{url}
 
-    If you didn't request this change, please ignore this.
+      #{gettext("If you didn't request this change, please ignore this.")}
 
-    ==============================
-    """)
+      ==============================
+      """)
+    end)
   end
 
   @doc """
   Deliver instructions to update a user email.
   """
   def deliver_update_email_instructions(user, url) do
-    deliver(user.email, "Update email instructions", """
+    with_user_locale(user, fn ->
+      deliver(user.email, gettext("Update email instructions"), """
 
-    ==============================
+      ==============================
 
-    Hi #{user.email},
+      #{gettext("Hi %{email},", email: user.email)}
 
-    You can change your email by visiting the URL below:
+      #{gettext("You can change your email by visiting the URL below:")}
 
-    #{url}
+      #{url}
 
-    If you didn't request this change, please ignore this.
+      #{gettext("If you didn't request this change, please ignore this.")}
 
-    ==============================
-    """)
+      ==============================
+      """)
+    end)
   end
 end

@@ -3,7 +3,11 @@ defmodule BibleReaderWeb.ReadingComponents do
   UI components for the reading companion workflow (dashboard, book grid, chapter view).
   """
   use Phoenix.Component
+  use Gettext, backend: BibleReaderWeb.Gettext
   use BibleReaderWeb, :verified_routes
+
+  alias BibleReader.ReadingPlan
+  alias BibleReaderWeb.RelativeTimeFormat
 
   @bucket_classes %{
     unread: "border-zinc-300 bg-white text-zinc-900 hover:border-primary hover:bg-primary-muted",
@@ -16,38 +20,49 @@ defmodule BibleReaderWeb.ReadingComponents do
 
   attr :suggestion, :map, required: true
   attr :timezone, :string, required: true
+  attr :locale, :string, required: true
+  attr :book_name, :string, required: true
 
   def continue_card(assigns) do
-    %{book: book, chapter: chapter, last_read: last_read} = assigns.suggestion
+    %{chapter: chapter, last_read: last_read} = assigns.suggestion
 
     last_line =
       if last_read do
         chapter = last_read.chapter
-        book = chapter.book
-        age = BibleReader.ReadingPlan.relative_label(last_read.read_at, assigns.timezone)
-        "Last read: #{book.name} #{chapter.chapter_number} · #{age}"
+
+        age =
+          last_read.read_at
+          |> ReadingPlan.relative_label(assigns.timezone)
+          |> RelativeTimeFormat.format(assigns.locale)
+
+        gettext("Last read: %{book} %{chapter} · %{age}",
+          book: assigns.book_name,
+          chapter: chapter.chapter_number,
+          age: age
+        )
       else
-        "Start your reading journey"
+        gettext("Start your reading journey")
       end
 
     assigns =
       assigns
-      |> assign(:book, book)
       |> assign(:chapter, chapter)
       |> assign(:last_line, last_line)
 
     ~H"""
     <div class="rounded-xl border border-zinc-200 bg-card p-5 shadow-sm">
-      <p class="text-xs font-medium uppercase tracking-wide text-zinc-500">Continue reading</p>
+      <p class="text-xs font-medium uppercase tracking-wide text-zinc-500">
+        {gettext("Continue reading")}
+      </p>
       <h2 class="mt-1 font-serif text-xl font-semibold text-zinc-900">
-        {@book.name} {@chapter.chapter_number}
+        {@book_name} {@chapter.chapter_number}
       </h2>
       <p class="mt-1 text-sm text-zinc-600">{@last_line}</p>
       <.link
-        navigate={~p"/read/books/#{@book.code}/#{@chapter.chapter_number}"}
+        navigate={~p"/read/books/#{@suggestion.book.code}/#{@chapter.chapter_number}"}
         class="mt-4 inline-flex rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary/90"
       >
-        Open chapter
+        {gettext("Open chapter")}
       </.link>
     </div>
     """
@@ -65,7 +80,7 @@ defmodule BibleReaderWeb.ReadingComponents do
     """
   end
 
-  attr :book, :map, required: true
+  attr :book_name, :string, required: true
   attr :chapters_read, :integer, required: true
   attr :total_chapters, :integer, required: true
   attr :book_code, :string, required: true
@@ -83,9 +98,12 @@ defmodule BibleReaderWeb.ReadingComponents do
       navigate={~p"/read/books/#{@book_code}"}
       class="flex items-center gap-4 rounded-lg border border-zinc-100 bg-card px-4 py-3 shadow-sm transition hover:border-zinc-200 hover:shadow"
     >
-      <span class="min-w-0 flex-1 font-medium text-zinc-900">{@book.name}</span>
+      <span class="min-w-0 flex-1 font-medium text-zinc-900">{@book_name}</span>
       <span class="shrink-0 text-sm tabular-nums text-zinc-600">
-        {@chapters_read}/{@total_chapters} read
+        {gettext("%{read}/%{total} read",
+          read: @chapters_read,
+          total: @total_chapters
+        )}
       </span>
       <div class="h-2 w-24 shrink-0 overflow-hidden rounded-full bg-zinc-100">
         <div class="h-full rounded-full bg-primary" style={"width: #{@pct}%"} />
@@ -110,8 +128,8 @@ defmodule BibleReaderWeb.ReadingComponents do
     ~H"""
     <.link
       navigate={@to}
-      title={"#{@book_name} #{@number}"}
-      aria-label={"#{@book_name} chapter #{@number}"}
+      title={gettext("%{book} %{number}", book: @book_name, number: @number)}
+      aria-label={gettext("%{book} chapter %{number}", book: @book_name, number: @number)}
       class={[
         "relative flex min-h-[2rem] min-w-[2rem] flex-col items-center justify-center border px-0.5 py-0.5 text-[11px] font-medium tabular-nums leading-none transition sm:min-h-[2.125rem] sm:min-w-[2.125rem] sm:text-xs",
         @cell_class,
@@ -163,13 +181,15 @@ defmodule BibleReaderWeb.ReadingComponents do
   def pace_summary(assigns) do
     ~H"""
     <div class="rounded-xl border border-zinc-200 bg-card p-5 shadow-sm">
-      <h2 class="text-sm font-semibold text-zinc-900">Current pace</h2>
+      <h2 class="text-sm font-semibold text-zinc-900">{gettext("Current pace")}</h2>
       <p class="mt-2 text-sm text-zinc-700">
         {pace_line(@pace)}
       </p>
       <p :if={!@pace.has_pace} class="mt-2 text-sm text-zinc-600">
-        At this pace, full coverage would take a very long time.
-        <span class="block mt-1 text-primary">Try a small goal: 3 chapters per week.</span>
+        {gettext("At this pace, full coverage would take a very long time.")}
+        <span class="block mt-1 text-primary">
+          {gettext("Try a small goal: 3 chapters per week.")}
+        </span>
       </p>
       <p :if={@pace.has_pace and @pace.remaining > 0} class="mt-2 text-sm text-zinc-600">
         {coverage_line(@pace)}
@@ -179,7 +199,7 @@ defmodule BibleReaderWeb.ReadingComponents do
         phx-click="toggle_more_stats"
         class="mt-3 text-sm font-medium text-primary hover:underline"
       >
-        {if @show_more?, do: "Hide stats", else: "More stats"}
+        {if @show_more?, do: gettext("Hide stats"), else: gettext("More stats")}
       </button>
       <.more_stats :if={@show_more?} pace={@pace} />
     </div>
@@ -192,13 +212,18 @@ defmodule BibleReaderWeb.ReadingComponents do
     ~H"""
     <div class="mt-4 border-t border-zinc-100 pt-4 text-sm text-zinc-700 space-y-1">
       <p>
-        Distinct chapters read: {@pace.distinct_read} / {@pace.total_in_scope}
+        {gettext("Distinct chapters read: %{read} / %{total}",
+          read: @pace.distinct_read,
+          total: @pace.total_in_scope
+        )}
       </p>
       <p :if={@pace.remaining > 0}>
-        Chapters not yet read at least once: {@pace.remaining}
+        {gettext("Chapters not yet read at least once: %{count}", count: @pace.remaining)}
       </p>
       <p :if={eta_text(@pace.friendly_eta)}>
-        At this pace, first time through every chapter in scope: {eta_text(@pace.friendly_eta)}
+        {gettext("At this pace, first time through every chapter in scope: %{eta}",
+          eta: eta_text(@pace.friendly_eta)
+        )}
       </p>
     </div>
     """
@@ -207,28 +232,31 @@ defmodule BibleReaderWeb.ReadingComponents do
   def chapter_grid_legend(assigns) do
     ~H"""
     <p class="mt-4 text-xs text-zinc-600">
-      <span class="font-medium">Legend:</span>
-      empty = unread · strong green = today · soft green = &lt; 7 days · teal = &lt; 30 days · pale = older
+      <span class="font-medium">{gettext("Legend:")}</span>
+      {gettext(
+        "empty = unread · strong green = today · soft green = < 7 days · teal = < 30 days · pale = older"
+      )}
     </p>
     """
   end
 
   defp pace_line(%{chapters_in_window: n, rolling_days: d}) do
-    chapter_word = if n == 1, do: "chapter", else: "chapters"
-    "#{n} #{chapter_word} in the last #{d} days"
+    gettext("%{count} chapters in the last %{days} days", count: n, days: d)
   end
 
   defp coverage_line(%{friendly_eta: :very_long}) do
-    "At this pace, full coverage would take a very long time."
+    gettext("At this pace, full coverage would take a very long time.")
   end
 
   defp coverage_line(%{friendly_eta: days}) when is_integer(days) do
-    "At this pace, touching every chapter in scope at least once: about #{days} days."
+    gettext("At this pace, touching every chapter in scope at least once: about %{days} days.",
+      days: days
+    )
   end
 
   defp coverage_line(_), do: nil
 
-  defp eta_text(:very_long), do: "a very long time"
-  defp eta_text(days) when is_integer(days), do: "about #{days} days"
+  defp eta_text(:very_long), do: gettext("a very long time")
+  defp eta_text(days) when is_integer(days), do: gettext("about %{days} days", days: days)
   defp eta_text(_), do: nil
 end

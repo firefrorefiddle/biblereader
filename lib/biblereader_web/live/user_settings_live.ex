@@ -2,19 +2,22 @@ defmodule BibleReaderWeb.UserSettingsLive do
   use BibleReaderWeb, :live_view
 
   alias BibleReader.Accounts
+  alias BibleReader.Locale, as: AppLocale
 
   def render(assigns) do
     ~H"""
     <.header class="text-center">
-      Account Settings
-      <:subtitle>Manage your account email address and password settings</:subtitle>
+      {gettext("Account Settings")}
+      <:subtitle>{gettext("Manage your account email address and password settings")}</:subtitle>
     </.header>
 
     <div class="space-y-12 divide-y">
       <div class="pb-8">
-        <h2 class="text-lg font-semibold text-zinc-900">Reading preferences</h2>
+        <h2 class="text-lg font-semibold text-zinc-900">{gettext("Reading preferences")}</h2>
         <p class="mt-1 text-sm text-zinc-600">
-          Time zone is used for future date-based stats. Apocryphal books are listed when enabled.
+          {gettext(
+            "Time zone is used for date-based stats. Language controls the app interface. Apocryphal books are listed when enabled."
+          )}
         </p>
         <.simple_form
           for={@profile_form}
@@ -23,19 +26,28 @@ defmodule BibleReaderWeb.UserSettingsLive do
           phx-change="validate_profile"
         >
           <.input
+            field={@profile_form[:locale]}
+            type="select"
+            label={gettext("Language")}
+            options={locale_options()}
+            required
+          />
+          <.input
             field={@profile_form[:timezone]}
             type="text"
-            label="IANA time zone"
+            label={gettext("IANA time zone")}
             placeholder="Europe/Berlin"
             required
           />
           <.input
             field={@profile_form[:show_apocrypha]}
             type="checkbox"
-            label="Show apocryphal books"
+            label={gettext("Show apocryphal books")}
           />
           <:actions>
-            <.button phx-disable-with="Saving...">Save reading preferences</.button>
+            <.button phx-disable-with={gettext("Saving...")}>
+              {gettext("Save reading preferences")}
+            </.button>
           </:actions>
         </.simple_form>
       </div>
@@ -46,18 +58,18 @@ defmodule BibleReaderWeb.UserSettingsLive do
           phx-submit="update_email"
           phx-change="validate_email"
         >
-          <.input field={@email_form[:email]} type="email" label="Email" required />
+          <.input field={@email_form[:email]} type="email" label={gettext("Email")} required />
           <.input
             field={@email_form[:current_password]}
             name="current_password"
             id="current_password_for_email"
             type="password"
-            label="Current password"
+            label={gettext("Current password")}
             value={@email_form_current_password}
             required
           />
           <:actions>
-            <.button phx-disable-with="Changing...">Change Email</.button>
+            <.button phx-disable-with={gettext("Changing...")}>{gettext("Change Email")}</.button>
           </:actions>
         </.simple_form>
       </div>
@@ -77,23 +89,28 @@ defmodule BibleReaderWeb.UserSettingsLive do
             id="hidden_user_email"
             value={@current_email}
           />
-          <.input field={@password_form[:password]} type="password" label="New password" required />
+          <.input
+            field={@password_form[:password]}
+            type="password"
+            label={gettext("New password")}
+            required
+          />
           <.input
             field={@password_form[:password_confirmation]}
             type="password"
-            label="Confirm new password"
+            label={gettext("Confirm new password")}
           />
           <.input
             field={@password_form[:current_password]}
             name="current_password"
             type="password"
-            label="Current password"
+            label={gettext("Current password")}
             id="current_password_for_password"
             value={@current_password}
             required
           />
           <:actions>
-            <.button phx-disable-with="Changing...">Change Password</.button>
+            <.button phx-disable-with={gettext("Changing...")}>{gettext("Change Password")}</.button>
           </:actions>
         </.simple_form>
       </div>
@@ -105,10 +122,10 @@ defmodule BibleReaderWeb.UserSettingsLive do
     socket =
       case Accounts.update_user_email(socket.assigns.current_user, token) do
         :ok ->
-          put_flash(socket, :info, "Email changed successfully.")
+          put_flash(socket, :info, gettext("Email changed successfully."))
 
         :error ->
-          put_flash(socket, :error, "Email change link is invalid or it has expired.")
+          put_flash(socket, :error, gettext("Email change link is invalid or it has expired."))
       end
 
     {:ok, push_navigate(socket, to: ~p"/users/settings")}
@@ -130,6 +147,7 @@ defmodule BibleReaderWeb.UserSettingsLive do
       |> assign(:password_form, to_form(password_changeset))
       |> assign(:profile_form, to_form(profile_changeset))
       |> assign(:trigger_submit, false)
+      |> assign(:locale_return_to, ~p"/users/settings")
 
     {:ok, socket}
   end
@@ -153,7 +171,8 @@ defmodule BibleReaderWeb.UserSettingsLive do
          socket
          |> assign(:current_user, user)
          |> assign(:profile_form, profile_form)
-         |> put_flash(:info, "Reading preferences updated.")}
+         |> put_flash(:info, gettext("Reading preferences updated."))
+         |> redirect(to: ~p"/locale/#{user.locale}?return_to=/users/settings")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, profile_form: to_form(Map.put(changeset, :action, :insert)))}
@@ -184,7 +203,9 @@ defmodule BibleReaderWeb.UserSettingsLive do
           &url(~p"/users/settings/confirm_email/#{&1}")
         )
 
-        info = "A link to confirm your email change has been sent to the new address."
+        info =
+          gettext("A link to confirm your email change has been sent to the new address.")
+
         {:noreply, socket |> put_flash(:info, info) |> assign(email_form_current_password: nil)}
 
       {:error, changeset} ->
@@ -220,5 +241,18 @@ defmodule BibleReaderWeb.UserSettingsLive do
       {:error, changeset} ->
         {:noreply, assign(socket, password_form: to_form(changeset))}
     end
+  end
+
+  defp locale_options do
+    Enum.map(AppLocale.supported(), fn code ->
+      label =
+        case code do
+          "de" -> gettext("German")
+          "en" -> gettext("English")
+          other -> other
+        end
+
+      {label, code}
+    end)
   end
 end

@@ -14,6 +14,10 @@ config :biblereader,
   ecto_repos: [BibleReader.Repo],
   generators: [timestamp_type: :utc_datetime]
 
+config :biblereader, BibleReaderWeb.Gettext,
+  locales: ~w(en de),
+  default_locale: "en"
+
 # Configures the endpoint
 config :biblereader, BibleReaderWeb.Endpoint,
   url: [host: "localhost"],

@@ -10,6 +10,7 @@ defmodule BibleReader.Accounts.User do
     field :confirmed_at, :utc_datetime
     field :timezone, :string, default: "Etc/UTC"
     field :show_apocrypha, :boolean, default: false
+    field :locale, :string, default: "en"
 
     timestamps(type: :utc_datetime)
   end
@@ -39,7 +40,9 @@ defmodule BibleReader.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :locale])
+    |> put_default_locale()
+    |> validate_locale()
     |> validate_email(opts)
     |> validate_password(opts)
   end
@@ -133,14 +136,33 @@ defmodule BibleReader.Accounts.User do
   end
 
   @doc """
-  Changeset for reading preferences: IANA `timezone` and whether to list apocryphal books.
+  Changeset for reading preferences: IANA `timezone`, UI `locale`, and whether to list apocryphal books.
   """
   def reading_profile_changeset(user, attrs) do
     user
-    |> cast(attrs, [:timezone, :show_apocrypha])
-    |> validate_required([:timezone])
+    |> cast(attrs, [:timezone, :show_apocrypha, :locale])
+    |> validate_required([:timezone, :locale])
     |> validate_length(:timezone, max: 80)
     |> validate_timezone()
+    |> validate_locale()
+  end
+
+  defp put_default_locale(changeset) do
+    if get_field(changeset, :locale) in [nil, ""] do
+      put_change(changeset, :locale, "en")
+    else
+      changeset
+    end
+  end
+
+  defp validate_locale(changeset) do
+    locale = get_field(changeset, :locale)
+
+    if is_nil(locale) or BibleReader.Locale.supported?(locale) do
+      changeset
+    else
+      add_error(changeset, :locale, "must be en or de")
+    end
   end
 
   defp validate_timezone(changeset) do

@@ -345,7 +345,7 @@ defmodule BibleReader.ReadingPlan do
     do: RelativeTime.age_bucket(read_count, last_read_at, timezone)
 
   @doc """
-  Delegates to `RelativeTime.label/2`.
+  Structured relative label; format for display with `BibleReaderWeb.RelativeTimeFormat.format/2`.
   """
   def relative_label(read_at, timezone), do: RelativeTime.label(read_at, timezone)
 

@@ -188,7 +188,7 @@ defmodule BibleReader.Accounts do
   end
 
   @doc """
-  Returns a changeset for reading profile (timezone, show apocrypha).
+  Returns a changeset for reading profile (timezone, locale, show apocrypha).
   """
   def change_user_reading_profile(%User{} = user, attrs \\ %{}) do
     User.reading_profile_changeset(user, attrs)

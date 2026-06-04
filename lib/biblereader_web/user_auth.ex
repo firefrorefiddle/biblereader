@@ -4,6 +4,8 @@ defmodule BibleReaderWeb.UserAuth do
   import Plug.Conn
   import Phoenix.Controller
 
+  use Gettext, backend: BibleReaderWeb.Gettext
+
   alias BibleReader.Accounts
 
   # Make the remember me cookie valid for 60 days.
@@ -61,10 +63,16 @@ defmodule BibleReaderWeb.UserAuth do
   #
   defp renew_session(conn) do
     delete_csrf_token()
+    locale = get_session(conn, BibleReaderWeb.Plugs.Locale.session_key())
 
     conn
     |> configure_session(renew: true)
     |> clear_session()
+    |> then(fn conn ->
+      if locale,
+        do: put_session(conn, BibleReaderWeb.Plugs.Locale.session_key(), locale),
+        else: conn
+    end)
   end
 
   @doc """
@@ -157,7 +165,7 @@ defmodule BibleReaderWeb.UserAuth do
     else
       socket =
         socket
-        |> Phoenix.LiveView.put_flash(:error, "You must log in to access this page.")
+        |> Phoenix.LiveView.put_flash(:error, gettext("You must log in to access this page."))
         |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")
 
       {:halt, socket}
@@ -206,7 +214,7 @@ defmodule BibleReaderWeb.UserAuth do
       conn
     else
       conn
-      |> put_flash(:error, "You must log in to access this page.")
+      |> put_flash(:error, gettext("You must log in to access this page."))
       |> maybe_store_return_to()
       |> redirect(to: ~p"/users/log_in")
       |> halt()

@@ -124,6 +124,20 @@ defmodule BibleReader.AccountsTest do
     end
   end
 
+  describe "update_user_reading_profile/2" do
+    test "updates locale" do
+      user = user_fixture()
+      assert {:ok, user} = Accounts.update_user_reading_profile(user, %{locale: "de"})
+      assert user.locale == "de"
+    end
+
+    test "rejects invalid locale" do
+      user = user_fixture()
+      assert {:error, changeset} = Accounts.update_user_reading_profile(user, %{locale: "fr"})
+      assert "must be en or de" in errors_on(changeset).locale
+    end
+  end
+
   describe "apply_user_email/3" do
     setup do
       %{user: user_fixture()}

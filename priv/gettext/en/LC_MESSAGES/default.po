@@ -1,0 +1,751 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/biblereader_web/components/reading_components.ex:130
+#, elixir-autogen, elixir-format
+msgid "%{book} %{number}"
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:132
+#, elixir-autogen, elixir-format
+msgid "%{book} chapter %{number}"
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:245
+#, elixir-autogen, elixir-format
+msgid "%{count} chapters in the last %{days} days"
+msgstr ""
+
+#: lib/biblereader_web/relative_time_format.ex:22
+#, elixir-autogen, elixir-format
+msgid "%{count}d"
+msgstr ""
+
+#: lib/biblereader_web/relative_time_format.ex:23
+#, elixir-autogen, elixir-format
+msgid "%{count}mo"
+msgstr ""
+
+#: lib/biblereader_web/relative_time_format.ex:24
+#, elixir-autogen, elixir-format
+msgid "%{count}y"
+msgstr ""
+
+#: lib/biblereader_web/live/book_live.ex:26
+#, elixir-autogen, elixir-format
+msgid "%{read} of %{total} chapters read"
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:102
+#, elixir-autogen, elixir-format
+msgid "%{read}/%{total} read"
+msgstr ""
+
+#: lib/biblereader_web/relative_time_format.ex:21
+#, elixir-autogen, elixir-format
+msgid "1d"
+msgstr ""
+
+#: lib/biblereader_web/live/user_settings_live.ex:202
+#, elixir-autogen, elixir-format
+msgid "A link to confirm your email change has been sent to the new address."
+msgstr ""
+
+#: lib/biblereader_web/live/user_settings_live.ex:10
+#, elixir-autogen, elixir-format
+msgid "Account Settings"
+msgstr ""
+
+#: lib/biblereader_web/components/core_components.ex:482
+#, elixir-autogen, elixir-format
+msgid "Actions"
+msgstr ""
+
+#: lib/biblereader_web/live/reading_home_live.ex:182
+#, elixir-autogen, elixir-format
+msgid "All"
+msgstr ""
+
+#: lib/biblereader_web/live/user_registration_live.ex:13
+#, elixir-autogen, elixir-format
+msgid "Already registered?"
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:225
+#, elixir-autogen, elixir-format
+msgid "At this pace, first time through every chapter in scope: %{eta}"
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:190
+#: lib/biblereader_web/components/reading_components.ex:249
+#, elixir-autogen, elixir-format
+msgid "At this pace, full coverage would take a very long time."
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:253
+#, elixir-autogen, elixir-format
+msgid "At this pace, touching every chapter in scope at least once: about %{days} days."
+msgstr ""
+
+#: lib/biblereader_web/components/core_components.ex:160
+#, elixir-autogen, elixir-format
+msgid "Attempting to reconnect"
+msgstr ""
+
+#: lib/biblereader_web/controllers/page_html/privacy.html.heex:19
+#, elixir-autogen, elixir-format
+msgid "Back to home"
+msgstr ""
+
+#: lib/biblereader_web/components/layouts/app.html.heex:5
+#, elixir-autogen, elixir-format
+msgid "Bible Reader"
+msgstr ""
+
+#: lib/biblereader_web/controllers/page_html/privacy.html.heex:8
+#, elixir-autogen, elixir-format
+msgid "Bible Reader stores the account information you provide (such as email) and your reading activity (which chapters you log, and when). We use essential session cookies so you can stay signed in securely; we do not use third-party analytics cookies in this application by default."
+msgstr ""
+
+#: lib/biblereader_web/live/book_live.ex:80
+#, elixir-autogen, elixir-format
+msgid "Book not found."
+msgstr ""
+
+#: lib/biblereader_web/live/book_live.ex:19
+#: lib/biblereader_web/live/reading_home_live.ex:79
+#, elixir-autogen, elixir-format
+msgid "Books"
+msgstr ""
+
+#: lib/biblereader_web/live/user_settings_live.ex:72
+#, elixir-autogen, elixir-format
+msgid "Change Email"
+msgstr ""
+
+#: lib/biblereader_web/live/user_settings_live.ex:108
+#, elixir-autogen, elixir-format
+msgid "Change Password"
+msgstr ""
+
+#: lib/biblereader_web/live/user_settings_live.ex:72
+#: lib/biblereader_web/live/user_settings_live.ex:108
+#, elixir-autogen, elixir-format
+msgid "Changing..."
+msgstr ""
+
+#: lib/biblereader_web/live/chapter_live.ex:146
+#, elixir-autogen, elixir-format
+msgid "Chapter marked as read."
+msgstr ""
+
+#: lib/biblereader_web/live/chapter_live.ex:135
+#, elixir-autogen, elixir-format
+msgid "Chapter not found."
+msgstr ""
+
+#: lib/biblereader_web/live/book_live.ex:51
+#, elixir-autogen, elixir-format
+msgid "Chapters"
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:222
+#, elixir-autogen, elixir-format
+msgid "Chapters not yet read at least once: %{count}"
+msgstr ""
+
+#: lib/biblereader_web/live/user_confirmation_live.ex:9
+#, elixir-autogen, elixir-format
+msgid "Confirm Account"
+msgstr ""
+
+#: lib/biblereader_web/live/user_confirmation_live.ex:15
+#, elixir-autogen, elixir-format
+msgid "Confirm my account"
+msgstr ""
+
+#: lib/biblereader_web/live/user_reset_password_live.ex:25
+#: lib/biblereader_web/live/user_settings_live.ex:96
+#, elixir-autogen, elixir-format
+msgid "Confirm new password"
+msgstr ""
+
+#: lib/biblereader/accounts/user_notifier.ex:46
+#, elixir-autogen, elixir-format
+msgid "Confirmation instructions"
+msgstr ""
+
+#: lib/biblereader_web/live/user_confirmation_live.ex:14
+#, elixir-autogen, elixir-format
+msgid "Confirming..."
+msgstr ""
+
+#: lib/biblereader_web/live/book_live.ex:42
+#, elixir-autogen, elixir-format
+msgid "Continue %{book} %{chapter}"
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:54
+#, elixir-autogen, elixir-format
+msgid "Continue reading"
+msgstr ""
+
+#: lib/biblereader_web/live/chapter_live.ex:155
+#, elixir-autogen, elixir-format
+msgid "Could not log read."
+msgstr ""
+
+#: lib/biblereader_web/live/chapter_live.ex:176
+#, elixir-autogen, elixir-format
+msgid "Could not save note."
+msgstr ""
+
+#: lib/biblereader_web/live/user_registration_live.ex:39
+#, elixir-autogen, elixir-format
+msgid "Create an account"
+msgstr ""
+
+#: lib/biblereader_web/live/user_registration_live.ex:38
+#, elixir-autogen, elixir-format
+msgid "Creating account..."
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:185
+#, elixir-autogen, elixir-format
+msgid "Current pace"
+msgstr ""
+
+#: lib/biblereader_web/live/user_settings_live.ex:67
+#: lib/biblereader_web/live/user_settings_live.ex:102
+#, elixir-autogen, elixir-format
+msgid "Current password"
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:216
+#, elixir-autogen, elixir-format
+msgid "Distinct chapters read: %{read} / %{total}"
+msgstr ""
+
+#: lib/biblereader_web/live/user_login_live.ex:10
+#, elixir-autogen, elixir-format
+msgid "Don't have an account?"
+msgstr ""
+
+#: lib/biblereader_web/live/user_confirmation_instructions_live.ex:15
+#: lib/biblereader_web/live/user_forgot_password_live.ex:15
+#: lib/biblereader_web/live/user_login_live.ex:19
+#: lib/biblereader_web/live/user_registration_live.ex:34
+#: lib/biblereader_web/live/user_settings_live.ex:61
+#, elixir-autogen, elixir-format
+msgid "Email"
+msgstr ""
+
+#: lib/biblereader_web/live/user_settings_live.ex:123
+#, elixir-autogen, elixir-format
+msgid "Email change link is invalid or it has expired."
+msgstr ""
+
+#: lib/biblereader_web/live/user_settings_live.ex:120
+#, elixir-autogen, elixir-format
+msgid "Email changed successfully."
+msgstr ""
+
+#: lib/biblereader_web/live/user_settings_live.ex:246
+#, elixir-autogen, elixir-format
+msgid "English"
+msgstr ""
+
+#: lib/biblereader_web/components/core_components.ex:151
+#, elixir-autogen, elixir-format
+msgid "Error!"
+msgstr ""
+
+#: lib/biblereader_web/live/user_forgot_password_live.ex:10
+#: lib/biblereader_web/live/user_login_live.ex:25
+#, elixir-autogen, elixir-format
+msgid "Forgot your password?"
+msgstr ""
+
+#: lib/biblereader_web/live/chapter_live.ex:63
+#, elixir-autogen, elixir-format
+msgid "Full Bible text is not available in this version yet. Run mix scripture.import deuelbbk to import the Elberfelder translation, or use your own Bible for reading; use this page to log progress and keep notes."
+msgstr ""
+
+#: lib/biblereader_web/live/user_settings_live.ex:245
+#, elixir-autogen, elixir-format
+msgid "German"
+msgstr ""
+
+#: lib/biblereader_web/components/core_components.ex:172
+#, elixir-autogen, elixir-format
+msgid "Hang in there while we get back on track"
+msgstr ""
+
+#: lib/biblereader/accounts/user_notifier.ex:50
+#: lib/biblereader/accounts/user_notifier.ex:72
+#: lib/biblereader/accounts/user_notifier.ex:94
+#, elixir-autogen, elixir-format
+msgid "Hi %{email},"
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:203
+#, elixir-autogen, elixir-format
+msgid "Hide stats"
+msgstr ""
+
+#: lib/biblereader_web/components/layouts/app.html.heex:8
+#: lib/biblereader_web/controllers/page_html/privacy.html.heex:2
+#: lib/biblereader_web/live/reading_home_live.ex:166
+#, elixir-autogen, elixir-format
+msgid "Home"
+msgstr ""
+
+#: lib/biblereader_web/live/user_settings_live.ex:38
+#, elixir-autogen, elixir-format
+msgid "IANA time zone"
+msgstr ""
+
+#: lib/biblereader/accounts/user_notifier.ex:56
+#, elixir-autogen, elixir-format
+msgid "If you didn't create an account with us, please ignore this."
+msgstr ""
+
+#: lib/biblereader/accounts/user_notifier.ex:78
+#: lib/biblereader/accounts/user_notifier.ex:100
+#, elixir-autogen, elixir-format
+msgid "If you didn't request this change, please ignore this."
+msgstr ""
+
+#: lib/biblereader_web/live/user_confirmation_instructions_live.ex:44
+#, elixir-autogen, elixir-format
+msgid "If your email is in our system and it has not been confirmed yet, you will receive an email with instructions shortly."
+msgstr ""
+
+#: lib/biblereader_web/live/user_forgot_password_live.ex:43
+#, elixir-autogen, elixir-format
+msgid "If your email is in our system, you will receive instructions to reset your password shortly."
+msgstr ""
+
+#: lib/biblereader_web/live/user_login_live.ex:23
+#, elixir-autogen, elixir-format
+msgid "Keep me logged in"
+msgstr ""
+
+#: lib/biblereader_web/live/user_settings_live.ex:31
+#, elixir-autogen, elixir-format
+msgid "Language"
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:37
+#, elixir-autogen, elixir-format
+msgid "Last read: %{book} %{chapter} · %{age}"
+msgstr ""
+
+#: lib/biblereader_web/live/chapter_live.ex:34
+#, elixir-autogen, elixir-format
+msgid "Last read: %{label} · Read count: %{count}"
+msgstr ""
+
+#: lib/biblereader_web/live/book_live.ex:32
+#, elixir-autogen, elixir-format
+msgid "Last read: chapter %{number}"
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:236
+#, elixir-autogen, elixir-format
+msgid "Legend:"
+msgstr ""
+
+#: lib/biblereader_web/components/layouts/app.html.heex:40
+#: lib/biblereader_web/live/user_confirmation_instructions_live.ex:25
+#: lib/biblereader_web/live/user_confirmation_live.ex:22
+#: lib/biblereader_web/live/user_forgot_password_live.ex:24
+#: lib/biblereader_web/live/user_login_live.ex:30
+#: lib/biblereader_web/live/user_registration_live.ex:15
+#: lib/biblereader_web/live/user_reset_password_live.ex:37
+#, elixir-autogen, elixir-format
+msgid "Log in"
+msgstr ""
+
+#: lib/biblereader_web/live/user_login_live.ex:8
+#, elixir-autogen, elixir-format
+msgid "Log in to account"
+msgstr ""
+
+#: lib/biblereader_web/components/layouts/app.html.heex:37
+#, elixir-autogen, elixir-format
+msgid "Log out"
+msgstr ""
+
+#: lib/biblereader_web/live/reading_home_live.ex:34
+#, elixir-autogen, elixir-format
+msgid "Log your first chapter from any book below to see a continue reading suggestion."
+msgstr ""
+
+#: lib/biblereader_web/live/user_login_live.ex:29
+#, elixir-autogen, elixir-format
+msgid "Logging in..."
+msgstr ""
+
+#: lib/biblereader_web/live/user_settings_live.ex:11
+#, elixir-autogen, elixir-format
+msgid "Manage your account email address and password settings"
+msgstr ""
+
+#: lib/biblereader_web/live/chapter_live.ex:47
+#, elixir-autogen, elixir-format
+msgid "Mark as read"
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:203
+#, elixir-autogen, elixir-format
+msgid "More stats"
+msgstr ""
+
+#: lib/biblereader_web/live/reading_home_live.ex:184
+#, elixir-autogen, elixir-format
+msgid "New Testament"
+msgstr ""
+
+#: lib/biblereader_web/live/user_reset_password_live.ex:21
+#: lib/biblereader_web/live/user_settings_live.ex:92
+#, elixir-autogen, elixir-format
+msgid "New password"
+msgstr ""
+
+#: lib/biblereader_web/live/user_confirmation_instructions_live.ex:10
+#, elixir-autogen, elixir-format
+msgid "No confirmation instructions received?"
+msgstr ""
+
+#: lib/biblereader_web/live/chapter_live.ex:113
+#, elixir-autogen, elixir-format
+msgid "No reads logged for this chapter yet."
+msgstr ""
+
+#: lib/biblereader_web/live/chapter_live.ex:39
+#, elixir-autogen, elixir-format
+msgid "Not read yet"
+msgstr ""
+
+#: lib/biblereader_web/live/chapter_live.ex:172
+#, elixir-autogen, elixir-format
+msgid "Note saved."
+msgstr ""
+
+#: lib/biblereader_web/live/chapter_live.ex:74
+#, elixir-autogen, elixir-format
+msgid "Notes"
+msgstr ""
+
+#: lib/biblereader_web/live/reading_home_live.ex:183
+#, elixir-autogen, elixir-format
+msgid "Old Testament"
+msgstr ""
+
+#: lib/biblereader_web/live/user_registration_live.ex:31
+#: lib/biblereader_web/live/user_reset_password_live.ex:18
+#, elixir-autogen, elixir-format
+msgid "Oops, something went wrong! Please check the errors below."
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:64
+#, elixir-autogen, elixir-format
+msgid "Open chapter"
+msgstr ""
+
+#: lib/biblereader_web/live/user_login_live.ex:20
+#: lib/biblereader_web/live/user_registration_live.ex:35
+#, elixir-autogen, elixir-format
+msgid "Password"
+msgstr ""
+
+#: lib/biblereader_web/live/user_reset_password_live.ex:63
+#, elixir-autogen, elixir-format
+msgid "Password reset successfully."
+msgstr ""
+
+#: lib/biblereader_web/components/layouts/app.html.heex:32
+#: lib/biblereader_web/controllers/page_html/privacy.html.heex:3
+#: lib/biblereader_web/controllers/page_html/privacy.html.heex:6
+#, elixir-autogen, elixir-format
+msgid "Privacy"
+msgstr ""
+
+#: lib/biblereader_web/live/reading_home_live.ex:44
+#, elixir-autogen, elixir-format
+msgid "Progress"
+msgstr ""
+
+#: lib/biblereader_web/live/chapter_live.ex:100
+#, elixir-autogen, elixir-format
+msgid "Reading history"
+msgstr ""
+
+#: lib/biblereader_web/live/user_settings_live.ex:16
+#, elixir-autogen, elixir-format
+msgid "Reading preferences"
+msgstr ""
+
+#: lib/biblereader_web/live/user_settings_live.ex:169
+#, elixir-autogen, elixir-format
+msgid "Reading preferences updated."
+msgstr ""
+
+#: lib/biblereader_web/live/reading_home_live.ex:62
+#, elixir-autogen, elixir-format
+msgid "Recently read"
+msgstr ""
+
+#: lib/biblereader_web/live/user_confirmation_instructions_live.ex:24
+#: lib/biblereader_web/live/user_confirmation_live.ex:21
+#: lib/biblereader_web/live/user_forgot_password_live.ex:23
+#: lib/biblereader_web/live/user_reset_password_live.ex:36
+#, elixir-autogen, elixir-format
+msgid "Register"
+msgstr ""
+
+#: lib/biblereader_web/live/user_registration_live.ex:11
+#, elixir-autogen, elixir-format
+msgid "Register for an account"
+msgstr ""
+
+#: lib/biblereader_web/live/user_confirmation_instructions_live.ex:18
+#, elixir-autogen, elixir-format
+msgid "Resend confirmation instructions"
+msgstr ""
+
+#: lib/biblereader_web/live/user_reset_password_live.ex:9
+#: lib/biblereader_web/live/user_reset_password_live.ex:30
+#, elixir-autogen, elixir-format
+msgid "Reset Password"
+msgstr ""
+
+#: lib/biblereader/accounts/user_notifier.ex:68
+#, elixir-autogen, elixir-format
+msgid "Reset password instructions"
+msgstr ""
+
+#: lib/biblereader_web/live/user_reset_password_live.ex:81
+#, elixir-autogen, elixir-format
+msgid "Reset password link is invalid or it has expired."
+msgstr ""
+
+#: lib/biblereader_web/live/user_reset_password_live.ex:29
+#, elixir-autogen, elixir-format
+msgid "Resetting..."
+msgstr ""
+
+#: lib/biblereader_web/live/chapter_live.ex:91
+#, elixir-autogen, elixir-format
+msgid "Save note"
+msgstr ""
+
+#: lib/biblereader_web/live/user_settings_live.ex:49
+#, elixir-autogen, elixir-format
+msgid "Save reading preferences"
+msgstr ""
+
+#: lib/biblereader_web/live/chapter_live.ex:93
+#, elixir-autogen, elixir-format
+msgid "Saved"
+msgstr ""
+
+#: lib/biblereader_web/live/user_settings_live.ex:48
+#, elixir-autogen, elixir-format
+msgid "Saving..."
+msgstr ""
+
+#: lib/biblereader_web/live/chapter_live.ex:61
+#, elixir-autogen, elixir-format
+msgid "Scripture text"
+msgstr ""
+
+#: lib/biblereader_web/live/user_forgot_password_live.ex:18
+#, elixir-autogen, elixir-format
+msgid "Send password reset instructions"
+msgstr ""
+
+#: lib/biblereader_web/live/user_confirmation_instructions_live.ex:17
+#: lib/biblereader_web/live/user_forgot_password_live.ex:17
+#, elixir-autogen, elixir-format
+msgid "Sending..."
+msgstr ""
+
+#: lib/biblereader_web/components/layouts/app.html.heex:35
+#: lib/biblereader_web/live/reading_home_live.ex:110
+#, elixir-autogen, elixir-format
+msgid "Settings"
+msgstr ""
+
+#: lib/biblereader_web/live/user_settings_live.ex:45
+#, elixir-autogen, elixir-format
+msgid "Show apocryphal books"
+msgstr ""
+
+#: lib/biblereader_web/live/user_login_live.ex:12
+#, elixir-autogen, elixir-format
+msgid "Sign up"
+msgstr ""
+
+#: lib/biblereader_web/components/core_components.ex:167
+#, elixir-autogen, elixir-format
+msgid "Something went wrong!"
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:43
+#, elixir-autogen, elixir-format
+msgid "Start your reading journey"
+msgstr ""
+
+#: lib/biblereader_web/components/core_components.ex:150
+#, elixir-autogen, elixir-format
+msgid "Success!"
+msgstr ""
+
+#: lib/biblereader_web/live/user_settings_live.ex:18
+#, elixir-autogen, elixir-format
+msgid "Time zone is used for date-based stats. Language controls the app interface. Apocryphal books are listed when enabled."
+msgstr ""
+
+#: lib/biblereader_web/live/reading_home_live.ex:19
+#, elixir-autogen, elixir-format
+msgid "Today"
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:192
+#, elixir-autogen, elixir-format
+msgid "Try a small goal: 3 chapters per week."
+msgstr ""
+
+#: lib/biblereader/accounts/user_notifier.ex:90
+#, elixir-autogen, elixir-format
+msgid "Update email instructions"
+msgstr ""
+
+#: lib/biblereader_web/live/user_confirmation_live.ex:49
+#, elixir-autogen, elixir-format
+msgid "User confirmation link is invalid or it has expired."
+msgstr ""
+
+#: lib/biblereader_web/live/user_confirmation_live.ex:38
+#, elixir-autogen, elixir-format
+msgid "User confirmed successfully."
+msgstr ""
+
+#: lib/biblereader_web/components/core_components.ex:155
+#, elixir-autogen, elixir-format
+msgid "We can't find the internet"
+msgstr ""
+
+#: lib/biblereader_web/live/user_confirmation_instructions_live.ex:11
+#, elixir-autogen, elixir-format
+msgid "We'll send a new confirmation link to your inbox"
+msgstr ""
+
+#: lib/biblereader_web/live/user_forgot_password_live.ex:11
+#, elixir-autogen, elixir-format
+msgid "We'll send a password reset link to your inbox"
+msgstr ""
+
+#: lib/biblereader_web/live/chapter_live.ex:86
+#, elixir-autogen, elixir-format
+msgid "Write a note for this chapter..."
+msgstr ""
+
+#: lib/biblereader/accounts/user_notifier.ex:96
+#, elixir-autogen, elixir-format
+msgid "You can change your email by visiting the URL below:"
+msgstr ""
+
+#: lib/biblereader/accounts/user_notifier.ex:52
+#, elixir-autogen, elixir-format
+msgid "You can confirm your account by visiting the URL below:"
+msgstr ""
+
+#: lib/biblereader/accounts/user_notifier.ex:74
+#, elixir-autogen, elixir-format
+msgid "You can reset your password by visiting the URL below:"
+msgstr ""
+
+#: lib/biblereader_web/controllers/page_html/privacy.html.heex:13
+#, elixir-autogen, elixir-format
+msgid "You may update your time zone, language, and other preferences in Settings. For data export or deletion requests, contact the operator of this deployment; retention and subprocessors depend on where the app is hosted."
+msgstr ""
+
+#: lib/biblereader_web/user_auth.ex:166
+#: lib/biblereader_web/user_auth.ex:215
+#, elixir-autogen, elixir-format
+msgid "You must log in to access this page."
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:260
+#, elixir-autogen, elixir-format
+msgid "a very long time"
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:261
+#, elixir-autogen, elixir-format
+msgid "about %{days} days"
+msgstr ""
+
+#: lib/biblereader_web/live/reading_home_live.ex:49
+#, elixir-autogen, elixir-format
+msgid "chapters read"
+msgstr ""
+
+#: lib/biblereader_web/components/core_components.ex:76
+#: lib/biblereader_web/components/core_components.ex:130
+#, elixir-autogen, elixir-format
+msgid "close"
+msgstr ""
+
+#: lib/biblereader_web/components/reading_components.ex:237
+#, elixir-autogen, elixir-format
+msgid "empty = unread · strong green = today · soft green = < 7 days · teal = < 30 days · pale = older"
+msgstr ""
+
+#: lib/biblereader_web/live/user_login_live.ex:14
+#, elixir-autogen, elixir-format
+msgid "for an account now."
+msgstr ""
+
+#: lib/biblereader_web/live/reading_home_live.ex:112
+#, elixir-autogen, elixir-format
+msgid "include apocryphal books, timezone, language, and account."
+msgstr ""
+
+#: lib/biblereader_web/live/reading_home_live.ex:52
+#, elixir-autogen, elixir-format
+msgid "notes"
+msgstr ""
+
+#: lib/biblereader_web/live/reading_home_live.ex:51
+#, elixir-autogen, elixir-format
+msgid "this week"
+msgstr ""
+
+#: lib/biblereader_web/live/user_registration_live.ex:17
+#, elixir-autogen, elixir-format
+msgid "to your account now."
+msgstr ""
+
+#: lib/biblereader_web/relative_time_format.ex:19
+#, elixir-autogen, elixir-format
+msgid "today"
+msgstr ""
+
+#: lib/biblereader_web/relative_time_format.ex:20
+#, elixir-autogen, elixir-format
+msgid "yesterday"
+msgstr ""

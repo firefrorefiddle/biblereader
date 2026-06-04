@@ -6,7 +6,7 @@ defmodule BibleReader.Scripture do
   import Ecto.Query
 
   alias BibleReader.Repo
-  alias BibleReader.Scripture.{Book, Chapter}
+  alias BibleReader.Scripture.{Book, BookNames, Chapter}
 
   @doc """
   Books visible to this user: Protestant canon always; apocrypha/deuterocanon only if
@@ -56,6 +56,13 @@ defmodule BibleReader.Scripture do
       order_by: [asc: c.chapter_number]
     )
     |> Repo.all()
+  end
+
+  @doc """
+  Localized book title for UI (OSIS `code` + user locale).
+  """
+  def book_display_name(book, locale) when is_binary(locale) do
+    BookNames.display_name(book, locale)
   end
 
   @doc """

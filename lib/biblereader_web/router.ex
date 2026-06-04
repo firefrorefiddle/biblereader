@@ -11,6 +11,7 @@ defmodule BibleReaderWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
+    plug BibleReaderWeb.Plugs.Locale
   end
 
   pipeline :api do
@@ -22,6 +23,7 @@ defmodule BibleReaderWeb.Router do
 
     get "/", PageController, :home
     get "/privacy", PageController, :privacy
+    get "/locale/:locale", LocaleController, :update
   end
 
   # Other scopes may use custom stacks.
@@ -52,7 +54,10 @@ defmodule BibleReaderWeb.Router do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
     live_session :redirect_if_user_is_authenticated,
-      on_mount: [{BibleReaderWeb.UserAuth, :redirect_if_user_is_authenticated}] do
+      on_mount: [
+        {BibleReaderWeb.Locale, :set_locale},
+        {BibleReaderWeb.UserAuth, :redirect_if_user_is_authenticated}
+      ] do
       live "/users/register", UserRegistrationLive, :new
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
@@ -66,7 +71,10 @@ defmodule BibleReaderWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     live_session :require_authenticated_user,
-      on_mount: [{BibleReaderWeb.UserAuth, :ensure_authenticated}] do
+      on_mount: [
+        {BibleReaderWeb.Locale, :set_locale},
+        {BibleReaderWeb.UserAuth, :ensure_authenticated}
+      ] do
       live "/read", ReadingHomeLive, :index
       live "/read/books/:book_code", BookLive, :show
       live "/read/books/:book_code/:chapter", ChapterLive, :show
@@ -81,7 +89,10 @@ defmodule BibleReaderWeb.Router do
     delete "/users/log_out", UserSessionController, :delete
 
     live_session :current_user,
-      on_mount: [{BibleReaderWeb.UserAuth, :mount_current_user}] do
+      on_mount: [
+        {BibleReaderWeb.Locale, :set_locale},
+        {BibleReaderWeb.UserAuth, :mount_current_user}
+      ] do
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
     end

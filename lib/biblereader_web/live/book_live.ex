@@ -8,22 +8,28 @@ defmodule BibleReaderWeb.BookLive do
   alias BibleReader.Notes
   alias BibleReader.ReadingPlan
   alias BibleReader.Scripture
+  alias BibleReaderWeb.RelativeTimeFormat
 
   @impl true
   def render(assigns) do
     ~H"""
     <div class="reading-record mx-auto max-w-4xl px-1 py-6 sm:px-2">
       <nav class="mb-4 text-sm">
-        <.link navigate={~p"/read"} class="text-primary hover:underline">← Books</.link>
+        <.link navigate={~p"/read"} class="text-primary hover:underline">
+          ← {gettext("Books")}
+        </.link>
       </nav>
 
       <header class="mb-6 border-b border-zinc-200 pb-4">
-        <h1 class="font-serif text-2xl font-semibold text-zinc-900">{@book.name}</h1>
+        <h1 class="font-serif text-2xl font-semibold text-zinc-900">{@book_name}</h1>
         <p class="mt-1 text-sm text-zinc-600">
-          {@chapters_read} of {@total_chapters} chapters read
+          {gettext("%{read} of %{total} chapters read",
+            read: @chapters_read,
+            total: @total_chapters
+          )}
         </p>
         <p :if={@last_chapter_number} class="mt-1 text-sm text-zinc-600">
-          Last read: chapter {@last_chapter_number}
+          {gettext("Last read: chapter %{number}", number: @last_chapter_number)}
           <span :if={@last_read_label}>· {@last_read_label}</span>
         </p>
       </header>
@@ -33,12 +39,17 @@ defmodule BibleReaderWeb.BookLive do
           navigate={~p"/read/books/#{@book.code}/#{@continue_chapter.chapter_number}"}
           class="inline-flex rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary/90"
         >
-          Continue {@book.name} {@continue_chapter.chapter_number}
+          {gettext("Continue %{book} %{chapter}",
+            book: @book_name,
+            chapter: @continue_chapter.chapter_number
+          )}
         </.link>
       </div>
 
       <section>
-        <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">Chapters</h2>
+        <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+          {gettext("Chapters")}
+        </h2>
         <div class="inline-grid max-w-full gap-px rounded-sm border border-zinc-300 bg-white p-px [grid-template-columns:repeat(auto-fill,minmax(2rem,2.75rem))]">
           <%= for ch <- @chapter_cells do %>
             <.chapter_cell
@@ -48,7 +59,7 @@ defmodule BibleReaderWeb.BookLive do
               bucket={ch.bucket}
               has_note?={ch.has_note?}
               to={ch.to}
-              book_name={@book.name}
+              book_name={@book_name}
             />
           <% end %>
         </div>
@@ -66,7 +77,7 @@ defmodule BibleReaderWeb.BookLive do
       nil ->
         {:ok,
          socket
-         |> put_flash(:error, "Book not found.")
+         |> put_flash(:error, gettext("Book not found."))
          |> push_navigate(to: ~p"/read")}
 
       book ->
@@ -75,6 +86,8 @@ defmodule BibleReaderWeb.BookLive do
   end
 
   defp load_book(socket, user, book) do
+    locale = socket.assigns.locale
+    book_name = Scripture.book_display_name(book, locale)
     timezone = user.timezone || "Etc/UTC"
     counts = ReadingPlan.read_counts_by_chapter_id(user.id)
     last_at = ReadingPlan.last_read_at_by_chapter_id(user.id)
@@ -89,7 +102,12 @@ defmodule BibleReaderWeb.BookLive do
         bucket = ReadingPlan.age_bucket(read_count, last, timezone)
 
         age_label =
-          if read_count > 0, do: ReadingPlan.relative_label(last, timezone), else: nil
+          if read_count > 0,
+            do:
+              last
+              |> ReadingPlan.relative_label(timezone)
+              |> RelativeTimeFormat.format(locale),
+            else: nil
 
         %{
           number: ch.chapter_number,
@@ -111,7 +129,12 @@ defmodule BibleReaderWeb.BookLive do
       |> Enum.max_by(fn {_n, at} -> at end, fn -> {nil, nil} end)
       |> then(fn
         {n, at} when not is_nil(at) ->
-          {n, ReadingPlan.relative_label(at, timezone)}
+          label =
+            at
+            |> ReadingPlan.relative_label(timezone)
+            |> RelativeTimeFormat.format(locale)
+
+          {n, label}
 
         _ ->
           {nil, nil}
@@ -120,8 +143,10 @@ defmodule BibleReaderWeb.BookLive do
     continue_chapter = continue_in_book(user, book, chapters, last_at)
 
     socket
-    |> assign(:page_title, book.name)
+    |> assign(:page_title, book_name)
+    |> assign(:locale_return_to, ~p"/read/books/#{book.code}")
     |> assign(:book, book)
+    |> assign(:book_name, book_name)
     |> assign(:chapter_cells, chapter_cells)
     |> assign(:chapters_read, chapters_read)
     |> assign(:total_chapters, total)

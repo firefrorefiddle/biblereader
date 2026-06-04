@@ -10,6 +10,7 @@ defmodule BibleReaderWeb.ChapterLive do
   alias BibleReader.ReadingPlan.RelativeTime
   alias BibleReader.Scripture
   alias BibleReader.ScriptureText
+  alias BibleReaderWeb.RelativeTimeFormat
 
   @impl true
   def render(assigns) do
@@ -17,7 +18,7 @@ defmodule BibleReaderWeb.ChapterLive do
     <div class="mx-auto max-w-5xl px-1 py-6 sm:px-2">
       <nav class="mb-4 text-sm">
         <.link navigate={~p"/read/books/#{@book.code}"} class="text-primary hover:underline">
-          ← {@book.name}
+          ← {@book_name}
         </.link>
       </nav>
 
@@ -26,13 +27,16 @@ defmodule BibleReaderWeb.ChapterLive do
           <header class="mb-6 flex flex-wrap items-start justify-between gap-4 border-b border-zinc-200 pb-4">
             <div>
               <h1 class="font-serif text-2xl font-semibold text-zinc-900">
-                {@book.name} {@chapter.chapter_number}
+                {@book_name} {@chapter.chapter_number}
               </h1>
               <p class="mt-1 text-sm text-zinc-600">
                 <span :if={@read_count > 0}>
-                  Last read: {@last_read_label} · Read count: {@read_count}
+                  {gettext("Last read: %{label} · Read count: %{count}",
+                    label: @last_read_label,
+                    count: @read_count
+                  )}
                 </span>
-                <span :if={@read_count == 0}>Not read yet</span>
+                <span :if={@read_count == 0}>{gettext("Not read yet")}</span>
               </p>
             </div>
             <button
@@ -40,7 +44,7 @@ defmodule BibleReaderWeb.ChapterLive do
               phx-click="log_read"
               class="shrink-0 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary/90"
             >
-              Mark as read
+              {gettext("Mark as read")}
             </button>
           </header>
 
@@ -54,13 +58,11 @@ defmodule BibleReaderWeb.ChapterLive do
               footnotes={@scripture_content.footnotes}
             />
             <div :if={is_nil(@scripture_content)}>
-              <p class="text-sm font-medium text-zinc-500">Scripture text</p>
+              <p class="text-sm font-medium text-zinc-500">{gettext("Scripture text")}</p>
               <p class="mt-3 text-sm leading-relaxed text-zinc-700">
-                Full Bible text is not available in this version yet. Run
-                <code class="rounded bg-zinc-100 px-1 py-0.5 text-xs">
-                  mix scripture.import deuelbbk
-                </code>
-                to import the Elberfelder translation, or use your own Bible for reading; use this page to log progress and keep notes.
+                {gettext(
+                  "Full Bible text is not available in this version yet. Run mix scripture.import deuelbbk to import the Elberfelder translation, or use your own Bible for reading; use this page to log progress and keep notes."
+                )}
               </p>
             </div>
           </div>
@@ -68,7 +70,9 @@ defmodule BibleReaderWeb.ChapterLive do
 
         <div class="mt-8 space-y-8 lg:mt-0">
           <section>
-            <h2 class="mb-2 text-sm font-semibold uppercase tracking-wide text-zinc-500">Notes</h2>
+            <h2 class="mb-2 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+              {gettext("Notes")}
+            </h2>
             <.form
               for={@note_form}
               id="chapter-note-form"
@@ -79,19 +83,21 @@ defmodule BibleReaderWeb.ChapterLive do
                 field={@note_form[:body]}
                 type="textarea"
                 rows="6"
-                placeholder="Write a note for this chapter..."
+                placeholder={gettext("Write a note for this chapter...")}
                 class="w-full rounded-lg border-zinc-200"
               />
               <div class="mt-2 flex items-center gap-3">
-                <.button type="submit" class="bg-primary hover:bg-primary/90">Save note</.button>
-                <span :if={@note_saved} class="text-sm text-emerald-700">Saved</span>
+                <.button type="submit" class="bg-primary hover:bg-primary/90">
+                  {gettext("Save note")}
+                </.button>
+                <span :if={@note_saved} class="text-sm text-emerald-700">{gettext("Saved")}</span>
               </div>
             </.form>
           </section>
 
           <section>
             <h2 class="mb-2 text-sm font-semibold uppercase tracking-wide text-zinc-500">
-              Reading history
+              {gettext("Reading history")}
             </h2>
             <ul
               :if={@history != []}
@@ -99,12 +105,12 @@ defmodule BibleReaderWeb.ChapterLive do
             >
               <%= for event <- @history do %>
                 <li class="px-4 py-2.5 text-zinc-700">
-                  {RelativeTime.format_datetime(event.read_at, @timezone)}
+                  {RelativeTime.format_datetime(event.read_at, @timezone, @locale)}
                 </li>
               <% end %>
             </ul>
             <p :if={@history == []} class="text-sm text-zinc-600">
-              No reads logged for this chapter yet.
+              {gettext("No reads logged for this chapter yet.")}
             </p>
           </section>
         </div>
@@ -126,7 +132,7 @@ defmodule BibleReaderWeb.ChapterLive do
       _ ->
         {:ok,
          socket
-         |> put_flash(:error, "Chapter not found.")
+         |> put_flash(:error, gettext("Chapter not found."))
          |> push_navigate(to: ~p"/read")}
     end
   end
@@ -137,7 +143,7 @@ defmodule BibleReaderWeb.ChapterLive do
       {:ok, _} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Chapter marked as read.")
+         |> put_flash(:info, gettext("Chapter marked as read."))
          |> load_chapter(
            Accounts.get_user!(socket.assigns.current_user.id),
            socket.assigns.book,
@@ -146,7 +152,7 @@ defmodule BibleReaderWeb.ChapterLive do
          |> assign(:note_saved, false)}
 
       {:error, _} ->
-        {:noreply, put_flash(socket, :error, "Could not log read.")}
+        {:noreply, put_flash(socket, :error, gettext("Could not log read."))}
     end
   end
 
@@ -163,15 +169,17 @@ defmodule BibleReaderWeb.ChapterLive do
       {:ok, _} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Note saved.")
+         |> put_flash(:info, gettext("Note saved."))
          |> assign(:note_saved, true)}
 
       {:error, _} ->
-        {:noreply, put_flash(socket, :error, "Could not save note.")}
+        {:noreply, put_flash(socket, :error, gettext("Could not save note."))}
     end
   end
 
   defp load_chapter(socket, user, book, chapter) do
+    locale = socket.assigns.locale
+    book_name = Scripture.book_display_name(book, locale)
     timezone = user.timezone || "Etc/UTC"
     counts = ReadingPlan.read_counts_by_chapter_id(user.id)
     last_at = ReadingPlan.last_read_at_by_chapter_id(user.id)
@@ -180,7 +188,10 @@ defmodule BibleReaderWeb.ChapterLive do
 
     last_read_label =
       if read_count > 0,
-        do: ReadingPlan.relative_label(last, timezone),
+        do:
+          last
+          |> ReadingPlan.relative_label(timezone)
+          |> RelativeTimeFormat.format(locale),
         else: nil
 
     note = Notes.get_note(user.id, chapter.id)
@@ -196,8 +207,10 @@ defmodule BibleReaderWeb.ChapterLive do
       end
 
     socket
-    |> assign(:page_title, "#{book.name} #{chapter.chapter_number}")
+    |> assign(:page_title, "#{book_name} #{chapter.chapter_number}")
+    |> assign(:locale_return_to, ~p"/read/books/#{book.code}/#{chapter.chapter_number}")
     |> assign(:book, book)
+    |> assign(:book_name, book_name)
     |> assign(:chapter, chapter)
     |> assign(:translation, translation)
     |> assign(:scripture_content, scripture_content)

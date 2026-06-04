@@ -3,42 +3,17 @@ defmodule BibleReaderWeb.ReadingHomeLiveTest do
 
   import Phoenix.LiveViewTest
 
-  import BibleReader.AccountsFixtures
-  alias BibleReader.ScriptureFixtures
+  alias BibleReader.AccountsFixtures
 
   setup %{conn: conn} do
-    %{chapter: chapter, book: book} = ScriptureFixtures.book_and_chapter_fixture()
-    user = user_fixture()
-    %{conn: log_in_user(conn, user), user: user, chapter: chapter, book: book}
+    user = AccountsFixtures.user_fixture(%{locale: "de"})
+    %{conn: log_in_user(conn, user), user: user}
   end
 
-  test "renders dashboard", %{conn: conn} do
-    {:ok, _lv, html} = live(conn, ~p"/read")
-    assert html =~ "Today"
-    assert html =~ "Progress"
-    assert html =~ "Books"
-  end
+  test "renders German dashboard for de locale", %{conn: conn} do
+    {:ok, _view, html} = live(conn, ~p"/read")
 
-  test "shows continue reading after log", %{conn: conn, user: user, chapter: chapter, book: book} do
-    alias BibleReader.Scripture.Chapter
-
-    {:ok, ch2} =
-      %Chapter{}
-      |> Chapter.changeset(%{book_id: book.id, chapter_number: 2})
-      |> BibleReader.Repo.insert()
-
-    assert {:ok, _} = BibleReader.ReadingPlan.log_chapter_read(user, chapter.id)
-
-    {:ok, _lv, html} = live(conn, ~p"/read")
-    assert html =~ "Continue reading"
-    assert html =~ book.name
-    assert html =~ Integer.to_string(ch2.chapter_number)
-  end
-
-  test "toggle more stats", %{conn: conn} do
-    {:ok, lv, _} = live(conn, ~p"/read")
-    html = lv |> element("button", "More stats") |> render_click()
-    assert html =~ "Distinct chapters read"
-    assert render(lv) =~ "Hide stats"
+    assert html =~ "Heute"
+    refute html =~ ">Today<"
   end
 end

@@ -1,0 +1,223 @@
+msgid ""
+msgstr ""
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "1CH"
+msgstr "1 Chronicles"
+
+msgid "1CO"
+msgstr "1 Corinthians"
+
+msgid "1JN"
+msgstr "1 John"
+
+msgid "1KI"
+msgstr "1 Kings"
+
+msgid "1MA"
+msgstr "1 Maccabees"
+
+msgid "1PE"
+msgstr "1 Peter"
+
+msgid "1SA"
+msgstr "1 Samuel"
+
+msgid "1TH"
+msgstr "1 Thessalonians"
+
+msgid "1TI"
+msgstr "1 Timothy"
+
+msgid "2CH"
+msgstr "2 Chronicles"
+
+msgid "2CO"
+msgstr "2 Corinthians"
+
+msgid "2JN"
+msgstr "2 John"
+
+msgid "2KI"
+msgstr "2 Kings"
+
+msgid "2MA"
+msgstr "2 Maccabees"
+
+msgid "2PE"
+msgstr "2 Peter"
+
+msgid "2SA"
+msgstr "2 Samuel"
+
+msgid "2TH"
+msgstr "2 Thessalonians"
+
+msgid "2TI"
+msgstr "2 Timothy"
+
+msgid "3JN"
+msgstr "3 John"
+
+msgid "ACT"
+msgstr "Acts"
+
+msgid "AMO"
+msgstr "Amos"
+
+msgid "BAR"
+msgstr "Baruch"
+
+msgid "COL"
+msgstr "Colossians"
+
+msgid "DAN"
+msgstr "Daniel"
+
+msgid "DEU"
+msgstr "Deuteronomy"
+
+msgid "ECC"
+msgstr "Ecclesiastes"
+
+msgid "EPH"
+msgstr "Ephesians"
+
+msgid "EST"
+msgstr "Esther"
+
+msgid "EXO"
+msgstr "Exodus"
+
+msgid "EZK"
+msgstr "Ezekiel"
+
+msgid "EZR"
+msgstr "Ezra"
+
+msgid "GAL"
+msgstr "Galatians"
+
+msgid "GEN"
+msgstr "Genesis"
+
+msgid "HAB"
+msgstr "Habakkuk"
+
+msgid "HAG"
+msgstr "Haggai"
+
+msgid "HEB"
+msgstr "Hebrews"
+
+msgid "HOS"
+msgstr "Hosea"
+
+msgid "ISA"
+msgstr "Isaiah"
+
+msgid "JAS"
+msgstr "James"
+
+msgid "JDG"
+msgstr "Judges"
+
+msgid "JDT"
+msgstr "Judith"
+
+msgid "JER"
+msgstr "Jeremiah"
+
+msgid "JHN"
+msgstr "John"
+
+msgid "JOB"
+msgstr "Job"
+
+msgid "JOE"
+msgstr "Joel"
+
+msgid "JON"
+msgstr "Jonah"
+
+msgid "JOS"
+msgstr "Joshua"
+
+msgid "JUD"
+msgstr "Jude"
+
+msgid "LAM"
+msgstr "Lamentations"
+
+msgid "LEV"
+msgstr "Leviticus"
+
+msgid "LUK"
+msgstr "Luke"
+
+msgid "MAL"
+msgstr "Malachi"
+
+msgid "MAT"
+msgstr "Matthew"
+
+msgid "MIC"
+msgstr "Micah"
+
+msgid "MRK"
+msgstr "Mark"
+
+msgid "NAM"
+msgstr "Nahum"
+
+msgid "NEH"
+msgstr "Nehemiah"
+
+msgid "NUM"
+msgstr "Numbers"
+
+msgid "OBA"
+msgstr "Obadiah"
+
+msgid "PHM"
+msgstr "Philemon"
+
+msgid "PHP"
+msgstr "Philippians"
+
+msgid "PRO"
+msgstr "Proverbs"
+
+msgid "PSA"
+msgstr "Psalms"
+
+msgid "REV"
+msgstr "Revelation"
+
+msgid "ROM"
+msgstr "Romans"
+
+msgid "RUT"
+msgstr "Ruth"
+
+msgid "SIR"
+msgstr "Sirach"
+
+msgid "SNG"
+msgstr "Song of Solomon"
+
+msgid "TIT"
+msgstr "Titus"
+
+msgid "TOB"
+msgstr "Tobit"
+
+msgid "WIS"
+msgstr "Wisdom"
+
+msgid "ZEC"
+msgstr "Zechariah"
+
+msgid "ZEP"
+msgstr "Zephaniah"

@@ -1,0 +1,223 @@
+msgid ""
+msgstr ""
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "1CH"
+msgstr "1. Chronik"
+
+msgid "1CO"
+msgstr "1. Korinther"
+
+msgid "1JN"
+msgstr "1. Johannes"
+
+msgid "1KI"
+msgstr "1. Könige"
+
+msgid "1MA"
+msgstr "1. Makkabäer"
+
+msgid "1PE"
+msgstr "1. Petrus"
+
+msgid "1SA"
+msgstr "1. Samuel"
+
+msgid "1TH"
+msgstr "1. Thessalonicher"
+
+msgid "1TI"
+msgstr "1. Timotheus"
+
+msgid "2CH"
+msgstr "2. Chronik"
+
+msgid "2CO"
+msgstr "2. Korinther"
+
+msgid "2JN"
+msgstr "2. Johannes"
+
+msgid "2KI"
+msgstr "2. Könige"
+
+msgid "2MA"
+msgstr "2. Makkabäer"
+
+msgid "2PE"
+msgstr "2. Petrus"
+
+msgid "2SA"
+msgstr "2. Samuel"
+
+msgid "2TH"
+msgstr "2. Thessalonicher"
+
+msgid "2TI"
+msgstr "2. Timotheus"
+
+msgid "3JN"
+msgstr "3. Johannes"
+
+msgid "ACT"
+msgstr "Apostelgeschichte"
+
+msgid "AMO"
+msgstr "Amos"
+
+msgid "BAR"
+msgstr "Baruch"
+
+msgid "COL"
+msgstr "Kolosser"
+
+msgid "DAN"
+msgstr "Daniel"
+
+msgid "DEU"
+msgstr "5. Mose"
+
+msgid "ECC"
+msgstr "Prediger"
+
+msgid "EPH"
+msgstr "Epheser"
+
+msgid "EST"
+msgstr "Esther"
+
+msgid "EXO"
+msgstr "2. Mose"
+
+msgid "EZK"
+msgstr "Hesekiel"
+
+msgid "EZR"
+msgstr "Esra"
+
+msgid "GAL"
+msgstr "Galater"
+
+msgid "GEN"
+msgstr "1. Mose"
+
+msgid "HAB"
+msgstr "Habakuk"
+
+msgid "HAG"
+msgstr "Haggai"
+
+msgid "HEB"
+msgstr "Hebräer"
+
+msgid "HOS"
+msgstr "Hosea"
+
+msgid "ISA"
+msgstr "Jesaja"
+
+msgid "JAS"
+msgstr "Jakobus"
+
+msgid "JDG"
+msgstr "Richter"
+
+msgid "JDT"
+msgstr "Judit"
+
+msgid "JER"
+msgstr "Jeremia"
+
+msgid "JHN"
+msgstr "Johannes"
+
+msgid "JOB"
+msgstr "Hiob"
+
+msgid "JOE"
+msgstr "Joel"
+
+msgid "JON"
+msgstr "Jona"
+
+msgid "JOS"
+msgstr "Josua"
+
+msgid "JUD"
+msgstr "Judas"
+
+msgid "LAM"
+msgstr "Klagelieder"
+
+msgid "LEV"
+msgstr "3. Mose"
+
+msgid "LUK"
+msgstr "Lukas"
+
+msgid "MAL"
+msgstr "Maleachi"
+
+msgid "MAT"
+msgstr "Matthäus"
+
+msgid "MIC"
+msgstr "Micha"
+
+msgid "MRK"
+msgstr "Markus"
+
+msgid "NAM"
+msgstr "Nahum"
+
+msgid "NEH"
+msgstr "Nehemia"
+
+msgid "NUM"
+msgstr "4. Mose"
+
+msgid "OBA"
+msgstr "Obadja"
+
+msgid "PHM"
+msgstr "Philemon"
+
+msgid "PHP"
+msgstr "Philipper"
+
+msgid "PRO"
+msgstr "Sprüche"
+
+msgid "PSA"
+msgstr "Psalmen"
+
+msgid "REV"
+msgstr "Offenbarung"
+
+msgid "ROM"
+msgstr "Römer"
+
+msgid "RUT"
+msgstr "Rut"
+
+msgid "SIR"
+msgstr "Jesus Sirach"
+
+msgid "SNG"
+msgstr "Hohelied"
+
+msgid "TIT"
+msgstr "Titus"
+
+msgid "TOB"
+msgstr "Tobit"
+
+msgid "WIS"
+msgstr "Weisheit Salomos"
+
+msgid "ZEC"
+msgstr "Sacharja"
+
+msgid "ZEP"
+msgstr "Zephanja"
