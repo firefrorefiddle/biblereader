@@ -180,36 +180,63 @@ defmodule BibleReader.ScriptureText.Importer do
   """
   @spec ensure_deuelbbk_extracted!() :: String.t()
   def ensure_deuelbbk_extracted! do
-    zip_path = deuelbbk_zip_path()
-
     dest_dir =
       Path.join([Application.app_dir(:biblereader, "priv"), "scripture", "usfm", "deuelbbk"])
 
     marker = Path.join(dest_dir, ".extracted")
 
-    if File.exists?(marker) do
-      dest_dir
-    else
-      File.mkdir_p!(dest_dir)
+    cond do
+      File.exists?(marker) ->
+        dest_dir
 
-      case System.cmd("unzip", ["-o", zip_path, "-d", dest_dir, "*.usfm"], stderr_to_stdout: true) do
-        {_output, 0} ->
-          File.write!(marker, DateTime.utc_now() |> DateTime.to_iso8601())
-          dest_dir
+      usfm_source_present?(dest_dir) ->
+        File.mkdir_p!(dest_dir)
+        write_extracted_marker!(marker)
+        dest_dir
 
-        {output, code} ->
-          raise "failed to unzip #{zip_path} (exit #{code}): #{output}"
-      end
+      true ->
+        zip_path = deuelbbk_zip_path!()
+        File.mkdir_p!(dest_dir)
+
+        case System.cmd("unzip", ["-o", zip_path, "-d", dest_dir, "*.usfm"],
+               stderr_to_stdout: true
+             ) do
+          {_output, 0} ->
+            write_extracted_marker!(marker)
+            dest_dir
+
+          {output, code} ->
+            raise "failed to unzip #{zip_path} (exit #{code}): #{output}"
+        end
     end
   end
 
-  defp deuelbbk_zip_path do
+  defp usfm_source_present?(dest_dir) do
+    dest_dir
+    |> Path.join("*.usfm")
+    |> Path.wildcard()
+    |> case do
+      [_ | _] -> true
+      _ -> false
+    end
+  end
+
+  defp write_extracted_marker!(marker) do
+    File.write!(marker, DateTime.utc_now() |> DateTime.to_iso8601())
+  end
+
+  defp deuelbbk_zip_path! do
     candidates = [
       Path.expand("deuelbbk_usfm.zip", File.cwd!()),
       Path.expand("../../deuelbbk_usfm.zip", Application.app_dir(:biblereader, "priv"))
     ]
 
     Enum.find(candidates, &File.exists?/1) ||
-      raise "deuelbbk_usfm.zip not found (expected in project root)"
+      raise """
+      deuelbbk_usfm.zip not found (expected in project root).
+
+      Either restore the zip for a one-time extract, or place Elberfelder *.usfm files in:
+        priv/scripture/usfm/deuelbbk/
+      """
   end
 end
