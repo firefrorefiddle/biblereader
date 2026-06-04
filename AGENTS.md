@@ -196,7 +196,7 @@ podman run -d \
 
 ### Production deployment (shared VM)
 
-Deploy matches **gtd** / **songbook-oc** on `152.53.251.51`: [`deploy/deploy.sh`](deploy/deploy.sh) builds a **`mix release`** locally, rsyncs to `~/biblereader`, runs **`bin/migrate`**, user **systemd** on port **4000**, **nginx** → `biblereader.upscale-automation.com`. Postgres on the VM is a **Podman** container (`deploy/server-setup-postgres.sh`); do not reuse local dev credentials. Mail: **Swoosh Mailgun** (EU), same domain as songbook (`MAILGUN_*` in `.env.production`). See **README § Deployment**.
+Deploy matches **gtd** / **songbook-oc** on `152.53.251.51`: [`deploy/deploy.sh`](deploy/deploy.sh) builds a **`mix release`** locally, rsyncs to `~/biblereader`, runs **`bin/migrate`**, user **systemd** on port **4000**, **nginx** → `biblereader.upscale-automation.com`. Postgres on the VM: **Podman** (`deploy/server-setup-postgres.sh`) or **apt** (see script when Podman is absent); do not reuse local dev credentials. Mail: **Swoosh Mailgun** (EU), same domain as songbook (`MAILGUN_*` in `.env.production`). **Status, procedure, troubleshooting:** [`docs/deployment.md`](docs/deployment.md).
 
 ### Developer experience
 

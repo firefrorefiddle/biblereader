@@ -40,6 +40,10 @@ Set DATABASE_URL in .env.production (URL-encode the password):
   ecto://biblereader:PASSWORD@127.0.0.1:5432/biblereader_prod
 
 Or install podman and re-run this script with PG_PASSWORD set.
+
+For apt postgresql-server instead, use:
+  export PG_PASSWORD='same as DATABASE_URL password'
+  sudo -E bash deploy/setup-postgres-apt.sh
 EOF
   exit 1
 fi

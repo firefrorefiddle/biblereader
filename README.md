@@ -47,46 +47,17 @@ mix test
 
 ## Deployment (production)
 
-Production runs on the same VM as **songbook-oc** and **gtd** (`152.53.251.51`): user-level **systemd**, **nginx** TLS, app on **`127.0.0.1:4000`**, public URL **`https://biblereader.upscale-automation.com`**.
+Production targets the shared VM (`152.53.251.51`) at **`https://biblereader.upscale-automation.com`**, same pattern as songbook-oc and gtd (user systemd, nginx TLS, `mix release` + rsync).
 
-### One-time server setup
+**Full status checklist, one-time setup, routine deploy, env vars, and troubleshooting:** [`docs/deployment.md`](docs/deployment.md).
 
-1. **DNS**: Point `biblereader.upscale-automation.com` A/AAAA at the server.
-
-2. **PostgreSQL** on the VM (localhost only). The shared host may not have Podman; use whichever applies:
-
-   - **Podman** (if installed): `export PG_PASSWORD="$(openssl rand -hex 24)"` then `bash deploy/server-setup-postgres.sh` on the server.
-   - **Otherwise** (requires sudo): follow the apt/PostgreSQL instructions printed when the script exits without Podman, or install PostgreSQL 16 and create role `biblereader` / database `biblereader_prod` matching `DATABASE_URL` in `.env.production`.
-
-   Copy the final `DATABASE_URL` into `.env.production` on your workstation (must match the password you set on the server).
-
-3. **Secrets**: Copy [`.env.production.example`](.env.production.example) to **`.env.production`**, set `SECRET_KEY_BASE` (`mix phx.gen.secret`), `DATABASE_URL`, and Mailgun vars (same EU account as songbook-oc: `MAILGUN_*`, `MAIL_FROM`).
-
-4. **Deploy credentials**: Copy [`.envrc.example`](.envrc.example) to **`.envrc`** with `SERVER` and `DOMAIN`.
-
-5. **Nginx**: Install [`deploy/nginx-biblereader.upscale-automation.com.conf`](deploy/nginx-biblereader.upscale-automation.com.conf) under `/etc/nginx/sites-available/`, enable, test, reload.
-
-6. **TLS**: `sudo certbot --nginx -d biblereader.upscale-automation.com`
-
-7. **User lingering** (if services stop after SSH logout): `loginctl enable-linger "$USER"`
-
-### Deploy from your workstation
+Quick start (after Postgres, DNS, nginx, and `.env.production` / `.envrc` exist):
 
 ```bash
-chmod +x deploy/deploy.sh
-./deploy/deploy.sh --seed   # first deploy: migrate + seed catalog
-./deploy/deploy.sh          # later deploys: build release, rsync, migrate, restart
+./deploy/deploy.sh --seed   # first deploy
+./deploy/deploy.sh          # later releases
+./deploy/deploy.sh --logs
 ```
-
-Logs: `./deploy/deploy.sh --logs`
-
-### Verification
-
-```bash
-curl -sI https://biblereader.upscale-automation.com/
-```
-
-Register, log in, open `/read`, and confirm LiveView works over HTTPS. Password-reset email should use links on `biblereader.upscale-automation.com` (Mailgun EU).
 
 ## Learn more
 
