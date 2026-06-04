@@ -4,6 +4,8 @@ defmodule BibleReader.ScriptureText.Usfm.Parser do
 
   v1 supports: `\\c`, `\\p`, `\\v`, `\\f` footnotes with `\\fr` / `\\ft`.
   Character styles (`\\em`, `\\add`, `\\nd`, etc.) are flattened to plain text.
+
+  Full limitation list and roadmap: `docs/scripture-text-import.md`.
   """
 
   alias BibleReader.ScriptureText.Usfm.{BookCode, Tokenizer}

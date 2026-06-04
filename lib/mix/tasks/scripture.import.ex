@@ -4,8 +4,10 @@ defmodule Mix.Tasks.Scripture.Import do
 
       mix scripture.import deuelbbk
 
-  Expects `deuelbbk_usfm.zip` in the project root. Extracts to
-  `priv/scripture/usfm/deuelbbk/` (gitignored) on first run.
+  Uses `priv/scripture/usfm/deuelbbk/*.usfm`. Unzips `deuelbbk_usfm.zip`
+  from the project root only if that folder is not already extracted.
+
+  See `docs/scripture-text-import.md` for what is and is not supported.
   """
   use Mix.Task
 

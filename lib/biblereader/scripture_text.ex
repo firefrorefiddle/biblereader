@@ -5,6 +5,8 @@ defmodule BibleReader.ScriptureText do
 
   Text is imported from USFM (or other formats) into normalized JSON; the app reads
   from the database, not raw USFM at runtime.
+
+  See `docs/scripture-text-import.md` for import scope, limitations, and future work.
   """
 
   import Ecto.Query

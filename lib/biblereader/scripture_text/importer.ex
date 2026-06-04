@@ -2,6 +2,8 @@ defmodule BibleReader.ScriptureText.Importer do
   @moduledoc """
   Imports parsed USFM books into `bible_translations`, `chapter_documents`,
   `bible_verses`, and `bible_footnotes`.
+
+  Limitations (translations supported, re-import, book codes): `docs/scripture-text-import.md`.
   """
 
   import Ecto.Query

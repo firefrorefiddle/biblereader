@@ -76,7 +76,7 @@ This document orients AI assistants and human contributors to how we build **Bib
 - **Timezone:** **profile-stored timezone** (IANA name, e.g. `Europe/Berlin`) drives any **calendar-day** grouping (if used beside rolling windows); store instants in UTC, convert for display and bucketing.  
 - **Tenancy:** single-user namespace (`user_id` scopes all mutable data); no org/tenant column until a product need is defined—avoids speculative schema.  
 - **Locale:** English UI and book names in seeds first; add Gettext / translated names when i18n becomes a requirement.  
-- **Scripture text:** optional **licensed import** via USFM (see `ScriptureText` context). USFM archives stay on disk (`deuelbbk_usfm.zip` → `priv/scripture/usfm/`); the app reads **normalized JSON** in PostgreSQL (`chapter_documents`, `bible_verses`, `bible_footnotes`). User notes/highlights remain overlays, not edits to source text. Do not redistribute copyrighted text beyond documented license terms.
+- **Scripture text:** optional **licensed import** via USFM (see `ScriptureText` context). USFM archives stay on disk (`deuelbbk_usfm.zip` → `priv/scripture/usfm/`); the app reads **normalized JSON** in PostgreSQL (`chapter_documents`, `bible_verses`, `bible_footnotes`). User notes/highlights remain overlays, not edits to source text. Do not redistribute copyrighted text beyond documented license terms. **Import/parser limitations and future work:** [`docs/scripture-text-import.md`](docs/scripture-text-import.md).
 - **Onboarding:** v1 can be minimal; **planned onboarding tour** is a later milestone (see product decisions).
 
 ---
@@ -248,7 +248,7 @@ Each row is complete only when it satisfies **[Definition of Done](#definition-o
 
 ## Out of scope for first iteration
 
-- Full verse-level text (licensing, UX, search)—**basic import + footnotes** supported via `ScriptureText`; apocrypha text, cross-refs, Strong’s, morphology still later 
+- Full verse-level text (licensing, UX, search)—**basic import + footnotes** supported via `ScriptureText`; apocrypha text, cross-refs, Strong’s, morphology still later (see [`docs/scripture-text-import.md`](docs/scripture-text-import.md))
 - Mobile apps (web-first responsive LiveView)  
 - Heavy social features—design hooks only (user ids, timestamps) where they don’t slow v1  
 

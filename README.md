@@ -21,13 +21,15 @@ mix run priv/repo/seeds.exs
 
 Or: `mix setup` (runs `ecto.setup`, which includes `seeds.exs`).
 
-3. **Optional:** import Elberfelder Bible text from USFM (requires `deuelbbk_usfm.zip` in the project root):
+3. **Optional:** import Elberfelder Bible text from USFM:
 
 ```bash
 mix scripture.import deuelbbk
 ```
 
-This extracts USFM to `priv/scripture/usfm/deuelbbk/` (gitignored) and loads verses, footnotes, and chapter documents into PostgreSQL. Without this step, chapter pages still work for logging reads and notes, but show an import hint instead of scripture text.
+On first run, place `deuelbbk_usfm.zip` in the project root (or copy USFM files into `priv/scripture/usfm/deuelbbk/` yourself). The task unzips once, then loads into PostgreSQL. You can delete the zip after that; re-import only needs the extracted `.usfm` files. Without import, chapter pages still work for logging reads and notes, but show a hint instead of scripture text.
+
+**Import limitations** (supported markers, known text-quality gaps, future work): [`docs/scripture-text-import.md`](docs/scripture-text-import.md).
 
 4. Start the server:
 
