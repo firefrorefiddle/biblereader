@@ -2,11 +2,7 @@ defmodule BibleReaderWeb.PageController do
   use BibleReaderWeb, :controller
 
   def home(conn, _params) do
-    if conn.assigns[:current_user] do
-      redirect(conn, to: ~p"/read")
-    else
-      render(conn, :home, layout: false)
-    end
+    redirect(conn, to: ~p"/read")
   end
 
   def privacy(conn, _params) do

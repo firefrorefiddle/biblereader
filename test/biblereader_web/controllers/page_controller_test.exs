@@ -1,8 +1,8 @@
 defmodule BibleReaderWeb.PageControllerTest do
   use BibleReaderWeb.ConnCase
 
-  test "GET /", %{conn: conn} do
+  test "GET / redirects to reading home", %{conn: conn} do
     conn = get(conn, ~p"/")
-    assert html_response(conn, 200) =~ "Peace of mind from prototype to production"
+    assert redirected_to(conn) == ~p"/read"
   end
 end
