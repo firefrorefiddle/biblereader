@@ -99,5 +99,34 @@ defmodule BibleReaderWeb.ScriptureComponentsTest do
       assert html =~ ~r{</a> werden}
       refute html =~ ~r{</a>werden}
     end
+
+    test "renders EPH 1:13 without footnote body leaking into verse text" do
+      usfm = File.read!("priv/scripture/usfm/deuelbbk/55-EPHdeuelbbk.usfm")
+      book = Parser.parse_book(usfm, filename: "55-EPHdeuelbbk.usfm")
+      chapter = Enum.find(book.chapters, &(&1.number == 1))
+      verse13 = Enum.find(chapter.verses, &(&1.number == 13))
+      [footnote | _] = verse13.footnotes
+
+      block =
+        Enum.find(chapter.blocks, fn block ->
+          Enum.any?(block["content"] || [], &(&1["type"] == "verse" and &1["number"] == 13))
+        end)
+
+      html =
+        render_component(&BibleReaderWeb.ScriptureComponents.chapter_content/1,
+          blocks: [block],
+          footnotes: [
+            %{ref_id: footnote.id, body: footnote.body, display_number: 5}
+          ]
+        )
+
+      assert html =~ ~r/auf den auch ihr<a[^>]+href="#footnote-#{footnote.id}"/
+      assert html =~ ~r{</a> gehofft}
+
+      assert [_, paragraph] = Regex.run(~r/<p class="indent-0">(.*?)<\/p>/s, html)
+      refute paragraph =~ "Erbteil"
+      refute paragraph =~ "ihrseid"
+      refute paragraph =~ "auchihr"
+    end
   end
 end

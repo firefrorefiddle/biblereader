@@ -62,16 +62,6 @@ defmodule BibleReaderWeb.EffectiveDate do
     assign(socket, :effective_date_picker_open?, false)
   end
 
-  @doc "Builds session assigns after a controller redirect (optional refresh hook)."
-  def refresh_assigns(socket) do
-    user = user_from_socket(socket)
-    timezone = user_timezone(user)
-    locale = socket.assigns.locale
-    session = %{@session_key => get_session_value(socket, @session_key)}
-
-    assign_effective_date(socket, session, timezone, locale)
-  end
-
   defp assign_effective_date(socket, session, timezone, locale) do
     effective_date = parse_session_date(session, timezone)
     options = build_options(timezone, locale, effective_date)
@@ -138,15 +128,8 @@ defmodule BibleReaderWeb.EffectiveDate do
     end
   end
 
-  defp get_session_value(_socket, _key), do: nil
-
   defp current_user(socket, session) do
     socket.assigns[:current_user] || user_from_session(session)
-  end
-
-  defp user_from_socket(socket) do
-    socket.assigns.current_user ||
-      raise "effective date requires authenticated current_user"
   end
 
   defp user_from_session(%{"user_token" => token}) when is_binary(token) do

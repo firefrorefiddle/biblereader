@@ -63,5 +63,32 @@ defmodule BibleReader.ScriptureText.Usfm.ParserTest do
       assert {:close, "f"} in tokens
       assert {:text, "world"} in tokens
     end
+
+    test "keeps nested +add and trailing text inside footnote body (EPH 1:13)" do
+      usfm = File.read!("priv/scripture/usfm/deuelbbk/55-EPHdeuelbbk.usfm")
+      book = Parser.parse_book(usfm, filename: "55-EPHdeuelbbk.usfm")
+      chapter = Enum.find(book.chapters, &(&1.number == 1))
+      verse13 = Enum.find(chapter.verses, &(&1.number == 13))
+
+      assert [footnote | _] = verse13.footnotes
+      assert footnote.body =~ "ein Erbteil erlangt habt"
+      assert footnote.body =~ "seid"
+
+      refute verse13.plain_text =~ "Erbteil"
+      assert verse13.plain_text =~ "auf den auch ihr"
+      assert verse13.plain_text =~ "gehofft"
+
+      assert [
+               %{"type" => "verse", "number" => 13},
+               %{"type" => "text", "text" => text},
+               %{"type" => "footnote_ref"},
+               %{"type" => "text", "text" => after_fnote}
+             ] = verse13.content_json
+
+      assert text =~ "auf den auch ihr"
+      refute text =~ "Erbteil"
+      assert after_fnote =~ "gehofft"
+      refute after_fnote =~ "Erbteil"
+    end
   end
 end

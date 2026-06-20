@@ -16,6 +16,29 @@ defmodule BibleReaderWeb.EffectiveDateLiveTest do
     %{conn: log_in_user(conn, user), user: user, book: book, chapter: chapter}
   end
 
+  test "opens picker when Set effective date is clicked", %{conn: conn} do
+    {:ok, view, html} = live(conn, ~p"/read")
+
+    refute html =~ "id=\"effective-date-picker\""
+
+    html = view |> element("button", "Set effective date") |> render_click()
+
+    assert html =~ "id=\"effective-date-picker\""
+    assert html =~ "Log chapters as if you read them"
+    assert html =~ "Today (default)"
+    assert html =~ "Apply"
+  end
+
+  test "closes picker when Cancel is clicked", %{conn: conn} do
+    {:ok, view, _html} = live(conn, ~p"/read")
+
+    view |> element("button", "Set effective date") |> render_click()
+
+    html = view |> element("#effective-date-picker button", "Cancel") |> render_click()
+
+    refute html =~ "id=\"effective-date-picker\""
+  end
+
   test "shows banner when effective date is set", %{conn: conn} do
     today = RelativeTime.today_in_zone("Etc/UTC")
     past = Date.add(today, -2)

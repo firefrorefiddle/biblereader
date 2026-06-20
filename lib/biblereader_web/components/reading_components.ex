@@ -333,8 +333,9 @@ defmodule BibleReaderWeb.ReadingComponents do
   def effective_date_picker_modal(assigns) do
     ~H"""
     <.modal
+      :if={@open?}
       id="effective-date-picker"
-      show={@open?}
+      show
       on_cancel={JS.push("close_effective_date_picker")}
     >
       <div id="effective-date-picker-description">

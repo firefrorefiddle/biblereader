@@ -11,6 +11,7 @@ defmodule BibleReader.ScriptureText.Usfm.Parser do
   alias BibleReader.ScriptureText.Usfm.{BookCode, Tokenizer}
 
   @skip_markers ~w(id toc1 toc2 toc3 mt1 mt2 mt3 s s1 s2 s3 s4)
+  @char_markers ~w(em add nd +em +add +nd)
 
   @type footnote :: %{
           id: String.t(),
@@ -134,7 +135,7 @@ defmodule BibleReader.ScriptureText.Usfm.Parser do
       position: length(state.footnotes)
     }
 
-    {chapters, current, %{state | footnote: active_footnote}}
+    {chapters, current, %{state | footnote: active_footnote, footnote_part: nil}}
   end
 
   defp reduce_token(
@@ -142,7 +143,12 @@ defmodule BibleReader.ScriptureText.Usfm.Parser do
          {chapters, current, %{footnote: active_footnote} = state}
        )
        when not is_nil(active_footnote) do
-    {chapters, current, put_in(state.footnote.fr, strip_char_markup(payload))}
+    state =
+      state
+      |> put_in([:footnote, :fr], strip_char_markup(payload))
+      |> Map.put(:footnote_part, :fr)
+
+    {chapters, current, state}
   end
 
   defp reduce_token(
@@ -150,7 +156,12 @@ defmodule BibleReader.ScriptureText.Usfm.Parser do
          {chapters, current, %{footnote: active_footnote} = state}
        )
        when not is_nil(active_footnote) do
-    {chapters, current, put_in(state.footnote.ft, strip_char_markup(payload))}
+    state =
+      state
+      |> append_footnote_field(:ft, payload)
+      |> Map.put(:footnote_part, :ft)
+
+    {chapters, current, state}
   end
 
   defp reduce_token({:close, "f"}, {chapters, current, %{footnote: active_footnote} = state})
@@ -172,7 +183,8 @@ defmodule BibleReader.ScriptureText.Usfm.Parser do
     state = %{
       state
       | footnotes: state.footnotes ++ [footnote],
-        footnote: nil
+        footnote: nil,
+        footnote_part: nil
     }
 
     {chapters, current, state}
@@ -180,19 +192,36 @@ defmodule BibleReader.ScriptureText.Usfm.Parser do
 
   defp reduce_token({:open, marker, _payload}, acc) when marker in @skip_markers, do: acc
 
+  defp reduce_token({:open, marker, payload}, {chapters, current, %{footnote: active} = state})
+       when not is_nil(active) and marker in @char_markers do
+    part = state.footnote_part || :ft
+    {chapters, current, append_footnote_field(state, part, payload)}
+  end
+
+  defp reduce_token({:close, marker}, {chapters, current, %{footnote: active} = state})
+       when not is_nil(active) and marker in @char_markers do
+    {chapters, current, state}
+  end
+
   defp reduce_token({:open, marker, payload}, {chapters, current, state})
-       when marker in ["em", "add", "nd", "+em", "+add", "+nd"] do
+       when marker in @char_markers do
     {chapters, current, append_text(state, strip_char_markup(payload))}
   end
 
   defp reduce_token({:close, marker}, {chapters, current, state})
-       when marker in ["em", "add", "nd", "+em", "+add", "+nd"] do
+       when marker in @char_markers do
     {chapters, current, state}
   end
 
   defp reduce_token({:open, _marker, _payload}, acc), do: acc
 
   defp reduce_token({:close, _marker}, acc), do: acc
+
+  defp reduce_token({:text, text}, {chapters, current, %{footnote: active} = state})
+       when not is_nil(active) do
+    part = state.footnote_part || :ft
+    {chapters, current, append_footnote_field(state, part, text)}
+  end
 
   defp reduce_token({:text, text}, {chapters, current, state}) do
     cleaned = strip_char_markup(text)
@@ -224,7 +253,8 @@ defmodule BibleReader.ScriptureText.Usfm.Parser do
       current_verse: nil,
       verses: %{},
       footnotes: [],
-      footnote: nil
+      footnote: nil,
+      footnote_part: nil
     }
   end
 
@@ -287,7 +317,7 @@ defmodule BibleReader.ScriptureText.Usfm.Parser do
   defp finalize_open_paragraph(%{paragraph: nil} = state), do: state
 
   defp finalize_open_paragraph(%{paragraph: paragraph} = state) do
-    content = paragraph.content
+    content = merge_text_nodes(paragraph.content)
 
     block = %{
       "type" => "paragraph",
@@ -406,6 +436,19 @@ defmodule BibleReader.ScriptureText.Usfm.Parser do
       _ -> raise "invalid verse marker payload: #{inspect(payload)}"
     end
   end
+
+  defp append_footnote_field(%{footnote: active} = state, :fr, text) do
+    fr = append_field_text(active.fr, text)
+    put_in(state.footnote.fr, normalize_space(fr))
+  end
+
+  defp append_footnote_field(%{footnote: active} = state, :ft, text) do
+    ft = append_field_text(active.ft, strip_char_markup(text))
+    put_in(state.footnote.ft, normalize_space(ft))
+  end
+
+  defp append_field_text("", text), do: text
+  defp append_field_text(prev, text), do: prev <> " " <> text
 
   defp footnote_marker(payload) do
     payload

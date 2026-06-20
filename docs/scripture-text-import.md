@@ -40,7 +40,9 @@ User notes, read logs, and highlights are **overlays** on catalog chapters — t
 
 **Skipped entirely (no block in output):** `\id`, `\toc*`, `\mt*`, `\s`, `\s1`–`\s4`.
 
-**Flattened to plain text (markup lost):** `\em`, `\add`, `\nd`, `\+em`, `\+add`, `\+nd`. Closing markers are no-ops. This can leave **stray words** or wrong word order when `\add` splits phrases (e.g. “r Bestimmung von” in Genesis 1:14).
+**Flattened to plain text (markup lost):** `\em`, `\add`, `\nd`, `\+em`, `\+add`, `\+nd`. Closing markers are no-ops. Adjacent text nodes are merged with a space when a paragraph block is finalized (and in verse `content_json`), which usually preserves word boundaries around `\add`; edge cases may still read awkwardly (e.g. “r Bestimmung von” in Genesis 1:14).
+
+**Footnote bodies:** Text and character styles between `\ft` and `\f*` (including nested `\+add`) belong in `bible_footnotes.body`, not in the main verse flow. The parser routes those tokens into the active footnote field.
 
 ---
 
