@@ -6,6 +6,8 @@ defmodule BibleReader.ReadingPlan.RelativeTime do
   `label/2` returns structured values for localization in the web layer.
   """
 
+  alias BibleReader.I18n.CalendarFormat
+
   @type label ::
           :today
           | :yesterday
@@ -105,13 +107,10 @@ defmodule BibleReader.ReadingPlan.RelativeTime do
   """
   @spec format_datetime(DateTime.t(), String.t(), String.t()) :: String.t()
   def format_datetime(%DateTime{} = dt, timezone, locale) do
-    local = shift_to_zone(dt, timezone)
-    pattern = datetime_pattern(locale)
-    Calendar.strftime(local, pattern)
+    dt
+    |> shift_to_zone(timezone)
+    |> CalendarFormat.format_datetime(locale)
   end
-
-  defp datetime_pattern("de"), do: "%d.%m.%Y, %H:%M"
-  defp datetime_pattern(_), do: "%b %-d, %Y at %-I:%M %p"
 
   defp shift_to_zone(%DateTime{} = dt, timezone) do
     case DateTime.shift_zone(dt, timezone, Tzdata.TimeZoneDatabase) do

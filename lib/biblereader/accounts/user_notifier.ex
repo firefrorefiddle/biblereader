@@ -3,18 +3,19 @@ defmodule BibleReader.Accounts.UserNotifier do
 
   use Gettext, backend: BibleReaderWeb.Gettext
 
+  alias BibleReader.Config
   alias BibleReader.Locale, as: AppLocale
   alias BibleReader.Mailer
 
   defp mail_from do
     case System.get_env("MAIL_FROM") do
       nil ->
-        {"BibleReader", "contact@example.com"}
+        {Config.app_name(), "contact@example.com"}
 
       from ->
         case Regex.run(~r/^(.+?)\s*<([^>]+)>$/, String.trim(from)) do
           [_, name, email] -> {String.trim(name), String.trim(email)}
-          _ -> {"BibleReader", String.trim(from)}
+          _ -> {Config.app_name(), String.trim(from)}
         end
     end
   end

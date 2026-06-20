@@ -86,9 +86,14 @@ defmodule BibleReaderWeb.ReadingHomeLive do
       </section>
 
       <section>
-        <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">
-          {gettext("Books")}
-        </h2>
+        <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <h2 class="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+            {gettext("Books")}
+          </h2>
+          <.link navigate={~p"/read/bible"} class="text-sm font-medium text-primary hover:underline">
+            {gettext("Bible overview")}
+          </.link>
+        </div>
         <div class="mb-4 flex flex-wrap gap-2">
           <button
             :for={{filter, label} <- testament_filters()}

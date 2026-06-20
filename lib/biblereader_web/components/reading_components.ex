@@ -132,7 +132,7 @@ defmodule BibleReaderWeb.ReadingComponents do
 
     ~H"""
     <div class={[
-      "group relative flex min-h-[2.75rem] min-w-[2rem] flex-col border sm:min-h-[3rem] sm:min-w-[2.125rem]",
+      "group relative flex min-h-[5rem] min-w-[2rem] flex-col border sm:min-h-[5.25rem] sm:min-w-[2.125rem]",
       @cell_class
     ]}>
       <.link
@@ -166,12 +166,13 @@ defmodule BibleReaderWeb.ReadingComponents do
         aria-label={gettext("Mark %{book} %{number} as read", book: @book_name, number: @number)}
         title={gettext("Mark as read")}
         class={[
-          "flex w-full items-center justify-center border-t border-inherit py-0.5 text-zinc-600 transition",
+          "flex w-full shrink-0 items-center justify-center border-t border-inherit",
+          "h-[2.75rem] text-zinc-600 transition",
           "hover:bg-emerald-100 hover:text-emerald-900",
           "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0"
         ]}
       >
-        <.icon name="hero-check-mini" class="h-3 w-3" />
+        <.icon name="hero-check" class="!h-4 !w-4" />
       </button>
     </div>
     """
@@ -277,6 +278,55 @@ defmodule BibleReaderWeb.ReadingComponents do
         "empty = unread · strong green = today · soft green = < 7 days · teal = < 30 days · pale = older"
       )}
     </p>
+    """
+  end
+
+  attr :book_name, :string, required: true
+  attr :book_code, :string, required: true
+  attr :chapters_read, :integer, required: true
+  attr :total_chapters, :integer, required: true
+  attr :chapter_cells, :list, required: true
+  attr :expanded?, :boolean, required: true
+
+  def book_overview_section(assigns) do
+    ~H"""
+    <section class="rounded-lg border border-zinc-200 bg-card shadow-sm">
+      <button
+        type="button"
+        phx-click="toggle_book"
+        phx-value-code={@book_code}
+        aria-expanded={to_string(@expanded?)}
+        class="flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-zinc-50"
+      >
+        <.icon
+          name={if @expanded?, do: "hero-chevron-down-mini", else: "hero-chevron-right-mini"}
+          class="h-4 w-4 shrink-0 text-zinc-500"
+        />
+        <span class="min-w-0 flex-1 font-medium text-zinc-900">{@book_name}</span>
+        <span class="shrink-0 text-sm tabular-nums text-zinc-600">
+          {gettext("%{read}/%{total} read",
+            read: @chapters_read,
+            total: @total_chapters
+          )}
+        </span>
+      </button>
+      <div :if={@expanded?} class="border-t border-zinc-100 px-4 pb-4 pt-3">
+        <div class="inline-grid max-w-full gap-px rounded-sm border border-zinc-300 bg-white p-px [grid-template-columns:repeat(auto-fill,minmax(2rem,2.75rem))]">
+          <%= for ch <- @chapter_cells do %>
+            <.chapter_cell
+              number={ch.number}
+              chapter_id={ch.chapter_id}
+              read_count={ch.read_count}
+              age_label={ch.age_label}
+              bucket={ch.bucket}
+              has_note?={ch.has_note?}
+              to={ch.to}
+              book_name={@book_name}
+            />
+          <% end %>
+        </div>
+      </div>
+    </section>
     """
   end
 

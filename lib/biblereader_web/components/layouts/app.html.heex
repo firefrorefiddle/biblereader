@@ -2,7 +2,7 @@
   <div class="flex items-center justify-between border-b border-zinc-100 py-3 text-sm">
     <div class="flex items-center gap-4">
       <a href={~p"/"} class="font-semibold text-zinc-900 hover:text-zinc-700">
-        {gettext("Bible Reader")}
+        {app_name()}
       </a>
       <%= if @current_user do %>
         <.link navigate={~p"/read"} class="text-zinc-700 hover:text-zinc-900">
@@ -10,6 +10,9 @@
         </.link>
         <.link navigate={~p"/read/history"} class="text-zinc-700 hover:text-zinc-900">
           {gettext("History")}
+        </.link>
+        <.link navigate={~p"/read/bible"} class="text-zinc-700 hover:text-zinc-900">
+          {gettext("Bible overview")}
         </.link>
         <button
           :if={assigns[:reading_area?]}

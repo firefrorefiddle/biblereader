@@ -124,25 +124,19 @@ defmodule BibleReader.ReadingPlan do
   end
 
   @doc """
-  Read events from the last `window_days` **calendar days** in the user's profile
-  timezone (including today), newest first. Each row preloads `chapter` and `chapter.book`.
+  All read events for the user in visible canon scope, newest first.
+
+  Each row preloads `chapter` and `chapter.book`. Relies on `(user_id, read_at)` indexing
+  for reasonable performance at v1 scale; pagination can be added later if needed.
   """
-  def recent_read_events(%User{} = user, opts \\ []) do
-    window_days = Keyword.get(opts, :window_days, @week_window_days)
-    timezone = user.timezone || "Etc/UTC"
-    today = RelativeTime.today_in_zone(timezone)
-    earliest_day = Date.add(today, -(window_days - 1))
-    window_start = RelativeTime.start_of_day_utc(earliest_day, timezone)
-    now = DateTime.utc_now()
+  def recent_read_events(%User{} = user, _opts \\ []) do
     scope_ids = chapter_ids_in_scope(user)
 
     if scope_ids == [] do
       []
     else
       from(cr in ChapterRead,
-        where:
-          cr.user_id == ^user.id and cr.chapter_id in ^scope_ids and
-            cr.read_at >= ^window_start and cr.read_at <= ^now,
+        where: cr.user_id == ^user.id and cr.chapter_id in ^scope_ids,
         order_by: [desc: cr.read_at],
         preload: [chapter: :book]
       )
@@ -294,6 +288,43 @@ defmodule BibleReader.ReadingPlan do
     )
     |> Repo.one()
     |> Kernel.||(0)
+  end
+
+  @doc """
+  Bible overview data: visible books with chapter lists and read progress.
+
+  Read counts and last-read timestamps are loaded in two aggregate queries;
+  chapters for all visible books load in one query via `Scripture`.
+  """
+  def bible_overview_for_user(%User{} = user) do
+    counts = read_counts_by_chapter_id(user.id)
+    last_at = last_read_at_by_chapter_id(user.id)
+    chapters_by_book = Scripture.list_chapters_grouped_by_book_for_user(user)
+
+    sections =
+      user
+      |> Scripture.list_books_for_user()
+      |> Enum.map(fn book ->
+        chapters = Map.get(chapters_by_book, book.id, [])
+
+        chapters_read =
+          Enum.count(chapters, fn ch -> Map.get(counts, ch.id, 0) > 0 end)
+
+        %{
+          book: book,
+          chapters: chapters,
+          chapters_read: chapters_read,
+          total_chapters: length(chapters)
+        }
+      end)
+
+    %{
+      sections: sections,
+      counts: counts,
+      last_at: last_at,
+      total_chapters: Enum.sum(Enum.map(sections, & &1.total_chapters)),
+      chapters_read: Enum.sum(Enum.map(sections, & &1.chapters_read))
+    }
   end
 
   @doc """

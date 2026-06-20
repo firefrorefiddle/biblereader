@@ -15,5 +15,7 @@ defmodule BibleReaderWeb.ReadingHomeLiveTest do
 
     assert html =~ "Heute"
     refute html =~ ">Today<"
+    assert html =~ "Leseverlauf"
+    refute html =~ ">History<"
   end
 end

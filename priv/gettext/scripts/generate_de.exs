@@ -28,7 +28,7 @@ default_translations = %{
     "In diesem Tempo, jedes Kapitel im Umfang mindestens einmal zu lesen: etwa %{days} Tage.",
   "Attempting to reconnect" => "Verbindung wird wiederhergestellt",
   "Back to home" => "Zurück zur Startseite",
-  "Bible Reader" => "Bibel Leser",
+  "Bible overview" => "Bibel-Übersicht",
   "Book not found." => "Buch nicht gefunden.",
   "Books" => "Bücher",
   "Change Email" => "E-Mail ändern",
@@ -37,6 +37,8 @@ default_translations = %{
   "Chapter marked as read." => "Kapitel als gelesen markiert.",
   "Chapter not found." => "Kapitel nicht gefunden.",
   "Chapters" => "Kapitel",
+  "Chapters you have read, grouped by day." =>
+    "Gelesene Kapitel, nach Tag gruppiert.",
   "Chapters not yet read at least once: %{count}" =>
     "Noch nicht mindestens einmal gelesene Kapitel: %{count}",
   "Confirm Account" => "Konto bestätigen",
@@ -46,6 +48,7 @@ default_translations = %{
   "Confirming..." => "Wird bestätigt…",
   "Continue %{book} %{chapter}" => "Weiter %{book} %{chapter}",
   "Continue reading" => "Weiterlesen",
+  "Collapse all" => "Alle zuklappen",
   "Could not log read." => "Lesen konnte nicht protokolliert werden.",
   "Could not undo read." => "Lesen konnte nicht rückgängig gemacht werden.",
   "Could not save note." => "Notiz konnte nicht gespeichert werden.",
@@ -62,6 +65,7 @@ default_translations = %{
   "Email changed successfully." => "E-Mail erfolgreich geändert.",
   "English" => "Englisch",
   "Error!" => "Fehler!",
+  "Expand all" => "Alle aufklappen",
   "Forgot your password?" => "Passwort vergessen?",
   "Full Bible text is not available in this version yet. Run mix scripture.import deuelbbk to import the Elberfelder translation, or use your own Bible for reading; use this page to log progress and keep notes." =>
     "Der vollständige Bibeltext ist in dieser Version noch nicht verfügbar. Führen Sie mix scripture.import deuelbbk aus, um die Elberfelder-Übersetzung zu importieren, oder nutzen Sie Ihre eigene Bibel zum Lesen; auf dieser Seite können Sie Fortschritt protokollieren und Notizen führen.",
@@ -70,6 +74,7 @@ default_translations = %{
     "Einen Moment — wir sind gleich wieder für Sie da",
   "Hi %{email}," => "Hallo %{email},",
   "Hide stats" => "Statistik ausblenden",
+  "History" => "Leseverlauf",
   "Home" => "Start",
   "IANA time zone" => "IANA-Zeitzone",
   "If you didn't create an account with us, please ignore this." =>
@@ -106,6 +111,7 @@ default_translations = %{
     "Keine Bestätigungsanleitung erhalten?",
   "No reads logged for this chapter yet." =>
     "Für dieses Kapitel sind noch keine Lesungen protokolliert.",
+  "No chapters read yet." => "Noch keine Kapitel gelesen.",
   "Not read yet" => "Noch nicht gelesen",
   "Note saved." => "Notiz gespeichert.",
   "Notes" => "Notizen",
@@ -178,8 +184,8 @@ default_translations = %{
   "this week" => "diese Woche",
   "today" => "heute",
   "yesterday" => "gestern",
-  "Bible Reader stores the account information you provide (such as email) and your reading activity (which chapters you log, and when). We use essential session cookies so you can stay signed in securely; we do not use third-party analytics cookies in this application by default." =>
-    "Bible Reader speichert die von Ihnen angegebenen Kontodaten (z. B. E-Mail) und Ihre Leseaktivität (welche Kapitel Sie wann protokollieren). Wir verwenden notwendige Session-Cookies, damit Sie sicher angemeldet bleiben können; standardmäßig setzen wir keine Analyse-Cookies von Drittanbietern.",
+  "%{app_name} stores the account information you provide (such as email) and your reading activity (which chapters you log, and when). We use essential session cookies so you can stay signed in securely; we do not use third-party analytics cookies in this application by default." =>
+    "%{app_name} speichert die von Ihnen angegebenen Kontodaten (z. B. E-Mail) und Ihre Leseaktivität (welche Kapitel Sie wann protokollieren). Wir verwenden notwendige Session-Cookies, damit Sie sicher angemeldet bleiben können; standardmäßig setzen wir keine Analyse-Cookies von Drittanbietern.",
   "You may update your time zone, language, and other preferences in Settings. For data export or deletion requests, contact the operator of this deployment; retention and subprocessors depend on where the app is hosted." =>
     "Zeitzone, Sprache und weitere Einstellungen können Sie unter Einstellungen anpassen. Für Datenexport oder Löschung wenden Sie sich an den Betreiber dieser Installation; Aufbewahrung und Unterauftragsverarbeiter hängen vom Hosting ab."
 }

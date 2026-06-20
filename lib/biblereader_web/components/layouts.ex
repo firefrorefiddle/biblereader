@@ -11,4 +11,10 @@ defmodule BibleReaderWeb.Layouts do
   use BibleReaderWeb, :html
 
   embed_templates "layouts/*"
+
+  @doc false
+  def app_name, do: BibleReader.Config.app_name()
+
+  @doc false
+  def page_title_suffix, do: " · #{app_name()}"
 end

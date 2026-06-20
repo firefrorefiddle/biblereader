@@ -68,33 +68,36 @@ defmodule BibleReader.ReadingPlanTest do
     assert ReadingPlan.chapters_read_in_window(user, 7) >= 1
   end
 
-  test "recent_read_events returns events in calendar week window", %{
+  test "recent_read_events returns all events for user", %{
     user: user,
     chapter: chapter
   } do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
     assert {:ok, _} = ReadingPlan.log_chapter_read(user, chapter.id, now)
 
-    [event] = ReadingPlan.recent_read_events(user, window_days: 7)
+    [event] = ReadingPlan.recent_read_events(user)
     assert event.chapter_id == chapter.id
     assert event.chapter.book.id == chapter.book_id
   end
 
-  test "recent_read_events excludes reads before calendar window", %{user: user, chapter: chapter} do
+  test "recent_read_events includes reads older than a week", %{user: user, chapter: chapter} do
     old =
       DateTime.utc_now()
       |> DateTime.add(-8 * 86_400, :second)
       |> DateTime.truncate(:second)
 
     assert {:ok, _} = ReadingPlan.log_chapter_read(user, chapter.id, old)
-    assert ReadingPlan.recent_read_events(user, window_days: 7) == []
+
+    events = ReadingPlan.recent_read_events(user)
+    assert length(events) == 1
+    assert hd(events).chapter_id == chapter.id
   end
 
   test "recent_read_events_by_day groups by user timezone day", %{user: user, chapter: chapter} do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
     assert {:ok, _} = ReadingPlan.log_chapter_read(user, chapter.id, now)
 
-    [day] = ReadingPlan.recent_read_events_by_day(user, window_days: 7)
+    [day] = ReadingPlan.recent_read_events_by_day(user)
     assert day.day_label == :today
     assert length(day.events) == 1
     assert hd(day.events).chapter_id == chapter.id
@@ -154,6 +157,23 @@ defmodule BibleReader.ReadingPlanTest do
     assert row.last_chapter_number == 1
   end
 
+  test "bible_overview_for_user aggregates progress in one pass", %{
+    user: user,
+    chapter: chapter,
+    book: book
+  } do
+    assert {:ok, _} = ReadingPlan.log_chapter_read(user, chapter.id)
+
+    overview = ReadingPlan.bible_overview_for_user(user)
+    assert overview.total_chapters >= 1
+    assert overview.chapters_read >= 1
+
+    section = Enum.find(overview.sections, &(&1.book.id == book.id))
+    assert section.chapters_read == 1
+    assert section.total_chapters >= 1
+    assert Enum.any?(section.chapters, &(&1.id == chapter.id))
+  end
+
   test "log with effective read_at groups in recent history", %{user: user, chapter: chapter} do
     today = RelativeTime.today_in_zone(user.timezone)
     past = Date.add(today, -2)
@@ -161,7 +181,7 @@ defmodule BibleReader.ReadingPlanTest do
 
     assert {:ok, _} = ReadingPlan.log_chapter_read(user, chapter.id, read_at)
 
-    days = ReadingPlan.recent_read_events_by_day(user, window_days: 7)
+    days = ReadingPlan.recent_read_events_by_day(user)
     matching = Enum.find(days, fn day -> day.date == past end)
     assert matching
     assert hd(matching.events).chapter_id == chapter.id

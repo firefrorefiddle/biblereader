@@ -16,6 +16,15 @@ defmodule BibleReaderWeb.EffectiveDateLiveTest do
     %{conn: log_in_user(conn, user), user: user, book: book, chapter: chapter}
   end
 
+  test "picker offers 30 selectable dates", %{conn: conn} do
+    {:ok, view, _html} = live(conn, ~p"/read")
+
+    html = view |> element("button", "Set effective date") |> render_click()
+
+    assert html =~ "within the last 30 days"
+    assert Regex.scan(~r/name="date" value="/, html) |> length() == 30
+  end
+
   test "opens picker when Set effective date is clicked", %{conn: conn} do
     {:ok, view, html} = live(conn, ~p"/read")
 

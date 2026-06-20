@@ -86,6 +86,7 @@ defmodule BibleReaderWeb.Router do
         {BibleReaderWeb.EffectiveDate, :assign_effective_date}
       ] do
       live "/read", ReadingHomeLive, :index
+      live "/read/bible", BibleOverviewLive, :index
       live "/read/history", ReadingHistoryLive, :index
       live "/read/books/:book_code", BookLive, :show
       live "/read/books/:book_code/:chapter", ChapterLive, :show

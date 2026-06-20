@@ -59,6 +59,24 @@ defmodule BibleReader.Scripture do
   end
 
   @doc """
+  All chapters visible to this user, grouped by `book_id`.
+
+  Single query for bible overview and other bulk chapter views.
+  """
+  def list_chapters_grouped_by_book_for_user(%BibleReader.Accounts.User{} = user) do
+    from(c in Chapter,
+      join: b in Book,
+      on: c.book_id == b.id,
+      where:
+        b.in_protestant_canon == true or
+          (b.in_apocrypha == true and ^user.show_apocrypha == true),
+      order_by: [asc: b.sort_order, asc: c.chapter_number]
+    )
+    |> Repo.all()
+    |> Enum.group_by(& &1.book_id)
+  end
+
+  @doc """
   Localized book title for UI (OSIS `code` + user locale).
   """
   def book_display_name(book, locale) when is_binary(locale) do

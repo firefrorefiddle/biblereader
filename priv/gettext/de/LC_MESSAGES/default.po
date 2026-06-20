@@ -11,7 +11,7 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: lib/biblereader_web/components/reading_components.ex:284
+#: lib/biblereader_web/components/reading_components.ex:334
 #, elixir-autogen, elixir-format
 msgid "%{count} chapters in the last %{days} days"
 msgstr "%{count} Kapitel in den letzten %{days} Tagen"
@@ -31,12 +31,14 @@ msgstr "%{count}Mon"
 msgid "%{count}y"
 msgstr "%{count}J"
 
-#: lib/biblereader_web/live/book_live.ex:27
+#: lib/biblereader_web/live/bible_overview_live.ex:28
+#: lib/biblereader_web/live/book_live.ex:28
 #, elixir-autogen, elixir-format
 msgid "%{read} of %{total} chapters read"
 msgstr "%{read} von %{total} Kapiteln gelesen"
 
 #: lib/biblereader_web/components/reading_components.ex:107
+#: lib/biblereader_web/components/reading_components.ex:307
 #, elixir-autogen, elixir-format
 msgid "%{read}/%{total} read"
 msgstr "%{read}/%{total} gelesen"
@@ -61,7 +63,8 @@ msgstr "Kontoeinstellungen"
 msgid "Actions"
 msgstr "Aktionen"
 
-#: lib/biblereader_web/live/reading_home_live.ex:201
+#: lib/biblereader_web/live/bible_overview_live.ex:220
+#: lib/biblereader_web/live/reading_home_live.ex:206
 #, elixir-autogen, elixir-format
 msgid "All"
 msgstr "Alle"
@@ -71,18 +74,18 @@ msgstr "Alle"
 msgid "Already registered?"
 msgstr "Bereits registriert?"
 
-#: lib/biblereader_web/components/reading_components.ex:264
+#: lib/biblereader_web/components/reading_components.ex:265
 #, elixir-autogen, elixir-format
 msgid "At this pace, first time through every chapter in scope: %{eta}"
 msgstr "In diesem Tempo dauert es bis zum ersten Mal durch jedes Kapitel im Umfang: %{eta}"
 
-#: lib/biblereader_web/components/reading_components.ex:229
-#: lib/biblereader_web/components/reading_components.ex:288
+#: lib/biblereader_web/components/reading_components.ex:230
+#: lib/biblereader_web/components/reading_components.ex:338
 #, elixir-autogen, elixir-format
 msgid "At this pace, full coverage would take a very long time."
 msgstr "In diesem Tempo würde eine vollständige Abdeckung sehr lange dauern."
 
-#: lib/biblereader_web/components/reading_components.ex:292
+#: lib/biblereader_web/components/reading_components.ex:342
 #, elixir-autogen, elixir-format
 msgid "At this pace, touching every chapter in scope at least once: about %{days} days."
 msgstr "In diesem Tempo, jedes Kapitel im Umfang mindestens einmal zu lesen: etwa %{days} Tage."
@@ -93,28 +96,24 @@ msgid "Attempting to reconnect"
 msgstr "Verbindung wird wiederhergestellt"
 
 #: lib/biblereader_web/controllers/page_html/privacy.html.heex:19
-#: lib/biblereader_web/live/reading_history_live.ex:58
+#: lib/biblereader_web/live/reading_history_live.ex:56
 #, elixir-autogen, elixir-format
 msgid "Back to home"
 msgstr "Zurück zur Startseite"
 
-#: lib/biblereader_web/components/layouts/app.html.heex:5
-#, elixir-autogen, elixir-format
-msgid "Bible Reader"
-msgstr "Bibel Leser"
-
 #: lib/biblereader_web/controllers/page_html/privacy.html.heex:8
 #, elixir-autogen, elixir-format
-msgid "Bible Reader stores the account information you provide (such as email) and your reading activity (which chapters you log, and when). We use essential session cookies so you can stay signed in securely; we do not use third-party analytics cookies in this application by default."
-msgstr "Bible Reader speichert die von Ihnen angegebenen Kontodaten (z. B. E-Mail) und Ihre Leseaktivität (welche Kapitel Sie wann protokollieren). Wir verwenden notwendige Session-Cookies, damit Sie sicher angemeldet bleiben können; standardmäßig setzen wir keine Analyse-Cookies von Drittanbietern."
+msgid "%{app_name} stores the account information you provide (such as email) and your reading activity (which chapters you log, and when). We use essential session cookies so you can stay signed in securely; we do not use third-party analytics cookies in this application by default."
+msgstr "%{app_name} speichert die von Ihnen angegebenen Kontodaten (z. B. E-Mail) und Ihre Leseaktivität (welche Kapitel Sie wann protokollieren). Wir verwenden notwendige Session-Cookies, damit Sie sicher angemeldet bleiben können; standardmäßig setzen wir keine Analyse-Cookies von Drittanbietern."
 
-#: lib/biblereader_web/live/book_live.ex:82
+#: lib/biblereader_web/live/book_live.ex:83
 #, elixir-autogen, elixir-format
 msgid "Book not found."
 msgstr "Buch nicht gefunden."
 
-#: lib/biblereader_web/live/book_live.ex:20
-#: lib/biblereader_web/live/reading_home_live.ex:90
+#: lib/biblereader_web/live/bible_overview_live.ex:19
+#: lib/biblereader_web/live/book_live.ex:21
+#: lib/biblereader_web/live/reading_home_live.ex:91
 #, elixir-autogen, elixir-format
 msgid "Books"
 msgstr "Bücher"
@@ -145,12 +144,12 @@ msgstr "Kapitel als gelesen markiert."
 msgid "Chapter not found."
 msgstr "Kapitel nicht gefunden."
 
-#: lib/biblereader_web/live/book_live.ex:52
+#: lib/biblereader_web/live/book_live.ex:53
 #, elixir-autogen, elixir-format
 msgid "Chapters"
 msgstr "Kapitel"
 
-#: lib/biblereader_web/components/reading_components.ex:261
+#: lib/biblereader_web/components/reading_components.ex:262
 #, elixir-autogen, elixir-format
 msgid "Chapters not yet read at least once: %{count}"
 msgstr "Noch nicht mindestens einmal gelesene Kapitel: %{count}"
@@ -181,7 +180,7 @@ msgstr "Bestätigungsanleitung"
 msgid "Confirming..."
 msgstr "Wird bestätigt…"
 
-#: lib/biblereader_web/live/book_live.ex:43
+#: lib/biblereader_web/live/book_live.ex:44
 #, elixir-autogen, elixir-format
 msgid "Continue %{book} %{chapter}"
 msgstr "Weiter %{book} %{chapter}"
@@ -191,8 +190,10 @@ msgstr "Weiter %{book} %{chapter}"
 msgid "Continue reading"
 msgstr "Weiterlesen"
 
-#: lib/biblereader_web/live/book_live.ex:114
-#: lib/biblereader_web/live/book_live.ex:118
+#: lib/biblereader_web/live/bible_overview_live.ex:145
+#: lib/biblereader_web/live/bible_overview_live.ex:149
+#: lib/biblereader_web/live/book_live.ex:115
+#: lib/biblereader_web/live/book_live.ex:119
 #: lib/biblereader_web/live/chapter_live.ex:204
 #, elixir-autogen, elixir-format
 msgid "Could not log read."
@@ -213,7 +214,7 @@ msgstr "Konto erstellen"
 msgid "Creating account..."
 msgstr "Konto wird erstellt…"
 
-#: lib/biblereader_web/components/reading_components.ex:224
+#: lib/biblereader_web/components/reading_components.ex:225
 #, elixir-autogen, elixir-format
 msgid "Current pace"
 msgstr "Aktuelles Tempo"
@@ -224,7 +225,7 @@ msgstr "Aktuelles Tempo"
 msgid "Current password"
 msgstr "Aktuelles Passwort"
 
-#: lib/biblereader_web/components/reading_components.ex:255
+#: lib/biblereader_web/components/reading_components.ex:256
 #, elixir-autogen, elixir-format
 msgid "Distinct chapters read: %{read} / %{total}"
 msgstr "Unterschiedliche gelesene Kapitel: %{read} / %{total}"
@@ -291,14 +292,14 @@ msgstr "Einen Moment — wir sind gleich wieder für Sie da"
 msgid "Hi %{email},"
 msgstr "Hallo %{email},"
 
-#: lib/biblereader_web/components/reading_components.ex:242
+#: lib/biblereader_web/components/reading_components.ex:243
 #, elixir-autogen, elixir-format
 msgid "Hide stats"
 msgstr "Statistik ausblenden"
 
 #: lib/biblereader_web/components/layouts/app.html.heex:9
 #: lib/biblereader_web/controllers/page_html/privacy.html.heex:2
-#: lib/biblereader_web/live/reading_home_live.ex:185
+#: lib/biblereader_web/live/reading_home_live.ex:190
 #, elixir-autogen, elixir-format
 msgid "Home"
 msgstr "Start"
@@ -349,17 +350,17 @@ msgstr "Zuletzt gelesen: %{book} %{chapter} · %{age}"
 msgid "Last read: %{label} · Read count: %{count}"
 msgstr "Zuletzt gelesen: %{label} · Anzahl Lesungen: %{count}"
 
-#: lib/biblereader_web/live/book_live.ex:33
+#: lib/biblereader_web/live/book_live.ex:34
 #, elixir-autogen, elixir-format
 msgid "Last read: chapter %{number}"
 msgstr "Zuletzt gelesen: Kapitel %{number}"
 
-#: lib/biblereader_web/components/reading_components.ex:275
+#: lib/biblereader_web/components/reading_components.ex:276
 #, elixir-autogen, elixir-format
 msgid "Legend:"
 msgstr "Legende:"
 
-#: lib/biblereader_web/components/layouts/app.html.heex:60
+#: lib/biblereader_web/components/layouts/app.html.heex:63
 #: lib/biblereader_web/live/user_confirmation_instructions_live.ex:25
 #: lib/biblereader_web/live/user_confirmation_live.ex:22
 #: lib/biblereader_web/live/user_forgot_password_live.ex:24
@@ -375,7 +376,7 @@ msgstr "Anmelden"
 msgid "Log in to account"
 msgstr "Bei Ihrem Konto anmelden"
 
-#: lib/biblereader_web/components/layouts/app.html.heex:56
+#: lib/biblereader_web/components/layouts/app.html.heex:59
 #, elixir-autogen, elixir-format
 msgid "Log out"
 msgstr "Abmelden"
@@ -401,12 +402,13 @@ msgstr "E-Mail-Adresse und Passwort Ihres Kontos verwalten"
 msgid "Mark as read"
 msgstr "Als gelesen markieren"
 
-#: lib/biblereader_web/components/reading_components.ex:242
+#: lib/biblereader_web/components/reading_components.ex:243
 #, elixir-autogen, elixir-format
 msgid "More stats"
 msgstr "Mehr Statistik"
 
-#: lib/biblereader_web/live/reading_home_live.ex:203
+#: lib/biblereader_web/live/bible_overview_live.ex:222
+#: lib/biblereader_web/live/reading_home_live.ex:208
 #, elixir-autogen, elixir-format
 msgid "New Testament"
 msgstr "Neues Testament"
@@ -442,7 +444,8 @@ msgstr "Notiz gespeichert."
 msgid "Notes"
 msgstr "Notizen"
 
-#: lib/biblereader_web/live/reading_home_live.ex:202
+#: lib/biblereader_web/live/bible_overview_live.ex:221
+#: lib/biblereader_web/live/reading_home_live.ex:207
 #, elixir-autogen, elixir-format
 msgid "Old Testament"
 msgstr "Altes Testament"
@@ -469,7 +472,7 @@ msgstr "Passwort"
 msgid "Password reset successfully."
 msgstr "Passwort erfolgreich zurückgesetzt."
 
-#: lib/biblereader_web/components/layouts/app.html.heex:49
+#: lib/biblereader_web/components/layouts/app.html.heex:52
 #: lib/biblereader_web/controllers/page_html/privacy.html.heex:3
 #: lib/biblereader_web/controllers/page_html/privacy.html.heex:6
 #, elixir-autogen, elixir-format
@@ -482,8 +485,8 @@ msgid "Progress"
 msgstr "Fortschritt"
 
 #: lib/biblereader_web/live/chapter_live.ex:138
-#: lib/biblereader_web/live/reading_history_live.ex:22
-#: lib/biblereader_web/live/reading_history_live.ex:105
+#: lib/biblereader_web/live/reading_history_live.ex:20
+#: lib/biblereader_web/live/reading_history_live.ex:103
 #, elixir-autogen, elixir-format
 msgid "Reading history"
 msgstr "Leseverlauf"
@@ -578,8 +581,8 @@ msgstr "Anleitung zum Passwort-Reset senden"
 msgid "Sending..."
 msgstr "Wird gesendet…"
 
-#: lib/biblereader_web/components/layouts/app.html.heex:53
-#: lib/biblereader_web/live/reading_home_live.ex:121
+#: lib/biblereader_web/components/layouts/app.html.heex:56
+#: lib/biblereader_web/live/reading_home_live.ex:126
 #, elixir-autogen, elixir-format
 msgid "Settings"
 msgstr "Einstellungen"
@@ -614,13 +617,13 @@ msgstr "Erfolg!"
 msgid "Time zone is used for date-based stats. Language controls the app interface. Apocryphal books are listed when enabled."
 msgstr "Time zone is used for date-based stats. Language controls the app interface. Apocryphal books are listed when enabled."
 
-#: lib/biblereader_web/live/reading_history_live.ex:111
+#: lib/biblereader_web/live/reading_history_live.ex:108
 #: lib/biblereader_web/live/reading_home_live.ex:20
 #, elixir-autogen, elixir-format
 msgid "Today"
 msgstr "Heute"
 
-#: lib/biblereader_web/components/reading_components.ex:231
+#: lib/biblereader_web/components/reading_components.ex:232
 #, elixir-autogen, elixir-format
 msgid "Try a small goal: 3 chapters per week."
 msgstr "Probieren Sie ein kleines Ziel: 3 Kapitel pro Woche."
@@ -686,12 +689,12 @@ msgstr "Zeitzone, Sprache und weitere Einstellungen können Sie unter Einstellun
 msgid "You must log in to access this page."
 msgstr "Sie müssen sich anmelden, um diese Seite aufzurufen."
 
-#: lib/biblereader_web/components/reading_components.ex:299
+#: lib/biblereader_web/components/reading_components.ex:349
 #, elixir-autogen, elixir-format
 msgid "a very long time"
 msgstr "sehr lange"
 
-#: lib/biblereader_web/components/reading_components.ex:300
+#: lib/biblereader_web/components/reading_components.ex:350
 #, elixir-autogen, elixir-format
 msgid "about %{days} days"
 msgstr "etwa %{days} Tage"
@@ -708,7 +711,7 @@ msgstr "Kapitel gelesen"
 msgid "close"
 msgstr "schließen"
 
-#: lib/biblereader_web/components/reading_components.ex:276
+#: lib/biblereader_web/components/reading_components.ex:277
 #, elixir-autogen, elixir-format
 msgid "empty = unread · strong green = today · soft green = < 7 days · teal = < 30 days · pale = older"
 msgstr "leer = ungelesen · kräftig grün = heute · hellgrün = < 7 Tage · blaugrün = < 30 Tage · blass = älter"
@@ -718,7 +721,7 @@ msgstr "leer = ungelesen · kräftig grün = heute · hellgrün = < 7 Tage · bl
 msgid "for an account now."
 msgstr "für ein Konto."
 
-#: lib/biblereader_web/live/reading_home_live.ex:123
+#: lib/biblereader_web/live/reading_home_live.ex:128
 #, elixir-autogen, elixir-format
 msgid "include apocryphal books, timezone, language, and account."
 msgstr "Apokryphe Bücher, Zeitzone, Sprache und Konto."
@@ -758,99 +761,118 @@ msgstr "Next chapter: %{book} %{number}"
 msgid "Previous chapter: %{book} %{number}"
 msgstr "Previous chapter: %{book} %{number}"
 
-#: lib/biblereader_web/live/reading_history_live.ex:25
-#, elixir-autogen, elixir-format
-msgid "Chapters you read in the last %{days} days."
-msgstr ""
-
 #: lib/biblereader_web/components/layouts/app.html.heex:12
 #, elixir-autogen, elixir-format
 msgid "History"
-msgstr ""
+msgstr "Leseverlauf"
 
 #: lib/biblereader_web/components/reading_components.ex:166
 #, elixir-autogen, elixir-format
 msgid "Mark %{book} %{number} as read"
-msgstr ""
-
-#: lib/biblereader_web/live/reading_history_live.ex:33
-#, elixir-autogen, elixir-format
-msgid "No chapters read in the last %{days} days."
-msgstr ""
+msgstr "%{book} %{number} als gelesen markieren"
 
 #: lib/biblereader_web/components/reading_components.ex:140
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Open %{book} %{number}"
-msgstr "%{book} %{number}"
+msgstr "%{book} %{number} öffnen"
 
 #: lib/biblereader_web/components/reading_components.ex:141
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Open %{book} chapter %{number}"
-msgstr "Next chapter: %{book} %{number}"
+msgstr "Kapitel %{number} von %{book} öffnen"
 
 #: lib/biblereader_web/live/reading_home_live.ex:62
 #, elixir-autogen, elixir-format
 msgid "View reading history"
-msgstr ""
+msgstr "View reading history"
 
-#: lib/biblereader_web/live/reading_history_live.ex:112
+#: lib/biblereader_web/live/reading_history_live.ex:109
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Yesterday"
-msgstr "gestern"
+msgstr "Yesterday"
 
-#: lib/biblereader_web/components/reading_components.ex:388
+#: lib/biblereader_web/components/reading_components.ex:439
 #, elixir-autogen, elixir-format
 msgid "Apply"
-msgstr "Übernehmen"
+msgstr "Apply"
 
-#: lib/biblereader_web/components/reading_components.ex:322
-#, elixir-autogen, elixir-format
+#: lib/biblereader_web/components/reading_components.ex:372
+#, elixir-autogen, elixir-format, fuzzy
 msgid "Back to today"
-msgstr "Zurück zu heute"
+msgstr "Back to today"
 
-#: lib/biblereader_web/components/reading_components.ex:382
+#: lib/biblereader_web/components/reading_components.ex:433
 #, elixir-autogen, elixir-format
 msgid "Cancel"
-msgstr "Abbrechen"
+msgstr "Cancel"
 
-#: lib/biblereader_web/live/book_live.ex:134
+#: lib/biblereader_web/live/bible_overview_live.ex:165
+#: lib/biblereader_web/live/book_live.ex:135
 #: lib/biblereader_web/live/chapter_live.ex:222
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Could not undo read."
 msgstr "Lesen konnte nicht rückgängig gemacht werden."
 
-#: lib/biblereader_web/components/reading_components.ex:345
+#: lib/biblereader_web/components/reading_components.ex:396
 #, elixir-autogen, elixir-format
 msgid "Log chapters as if you read them on another day within the last %{days} days."
-msgstr "Kapitel so protokollieren, als hätten Sie sie an einem anderen Tag in den letzten %{days} Tagen gelesen."
+msgstr "Log chapters as if you read them on another day within the last %{days} days."
 
-#: lib/biblereader_web/components/reading_components.ex:313
+#: lib/biblereader_web/components/reading_components.ex:363
 #, elixir-autogen, elixir-format
 msgid "Logging reads for: %{date}"
-msgstr "Lesen wird protokolliert für: %{date}"
+msgstr "Logging reads for: %{date}"
 
-#: lib/biblereader_web/components/layouts/app.html.heex:20
-#: lib/biblereader_web/components/reading_components.ex:342
+#: lib/biblereader_web/components/layouts/app.html.heex:23
+#: lib/biblereader_web/components/reading_components.ex:393
 #, elixir-autogen, elixir-format
 msgid "Set effective date"
-msgstr "Stichtag setzen"
+msgstr "Set effective date"
 
 #: lib/biblereader_web/controllers/effective_date_controller.ex:44
 #, elixir-autogen, elixir-format
 msgid "That date is not available."
-msgstr "Dieses Datum ist nicht verfügbar."
+msgstr "That date is not available."
 
 #: lib/biblereader_web/controllers/effective_date_controller.ex:34
 #, elixir-autogen, elixir-format
 msgid "That date is not available. Choose today or a day within the last %{days} days."
-msgstr "Dieses Datum ist nicht verfügbar. Wählen Sie heute oder einen Tag innerhalb der letzten %{days} Tage."
+msgstr "That date is not available. Choose today or a day within the last %{days} days."
 
-#: lib/biblereader_web/effective_date.ex:110
+#: lib/biblereader_web/effective_date.ex:100
 #, elixir-autogen, elixir-format
 msgid "Today (default)"
-msgstr "Heute (Standard)"
+msgstr "Today (default)"
 
 #: lib/biblereader_web/components/core_components.ex:160
 #, elixir-autogen, elixir-format
 msgid "Undo"
 msgstr "Rückgängig"
+
+#: lib/biblereader_web/components/layouts/app.html.heex:15
+#: lib/biblereader_web/live/bible_overview_live.ex:25
+#: lib/biblereader_web/live/bible_overview_live.ex:206
+#: lib/biblereader_web/live/reading_home_live.ex:94
+#, elixir-autogen, elixir-format
+msgid "Bible overview"
+msgstr "Bibel-Übersicht"
+
+#: lib/biblereader_web/live/reading_history_live.ex:23
+#, elixir-autogen, elixir-format
+msgid "Chapters you have read, grouped by day."
+msgstr "Gelesene Kapitel, nach Tag gruppiert."
+
+#: lib/biblereader_web/live/bible_overview_live.ex:64
+#, elixir-autogen, elixir-format
+msgid "Collapse all"
+msgstr "Alle zuklappen"
+
+#: lib/biblereader_web/live/bible_overview_live.ex:57
+#, elixir-autogen, elixir-format
+msgid "Expand all"
+msgstr "Alle aufklappen"
+
+#: lib/biblereader_web/live/reading_history_live.ex:31
+#, elixir-autogen, elixir-format
+msgid "No chapters read yet."
+msgstr "Noch keine Kapitel gelesen."

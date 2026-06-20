@@ -10,9 +10,9 @@ defmodule BibleReader.ReadingPlan.EffectiveDateTest do
     %{user: user_fixture()}
   end
 
-  test "validate accepts today and last 7 days", %{user: user} do
+  test "validate accepts today and last 30 days", %{user: user} do
     today = RelativeTime.today_in_zone(user.timezone)
-    earliest = Date.add(today, -6)
+    earliest = Date.add(today, -29)
 
     assert {:ok, ^today} = EffectiveDate.validate(today, user.timezone)
     assert {:ok, ^earliest} = EffectiveDate.validate(earliest, user.timezone)
@@ -24,9 +24,9 @@ defmodule BibleReader.ReadingPlan.EffectiveDateTest do
     assert {:error, :future} = EffectiveDate.validate(future, user.timezone)
   end
 
-  test "validate rejects dates older than 7 days", %{user: user} do
+  test "validate rejects dates older than 30 days", %{user: user} do
     today = RelativeTime.today_in_zone(user.timezone)
-    too_old = Date.add(today, -7)
+    too_old = Date.add(today, -30)
     assert {:error, :too_old} = EffectiveDate.validate(too_old, user.timezone)
   end
 

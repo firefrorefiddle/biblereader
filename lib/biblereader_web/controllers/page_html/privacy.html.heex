@@ -6,7 +6,8 @@
   <h1 class="text-2xl font-semibold text-zinc-900">{gettext("Privacy")}</h1>
   <p class="mt-4 text-sm leading-relaxed">
     {gettext(
-      "Bible Reader stores the account information you provide (such as email) and your reading activity (which chapters you log, and when). We use essential session cookies so you can stay signed in securely; we do not use third-party analytics cookies in this application by default."
+      "%{app_name} stores the account information you provide (such as email) and your reading activity (which chapters you log, and when). We use essential session cookies so you can stay signed in securely; we do not use third-party analytics cookies in this application by default.",
+      app_name: BibleReader.Config.app_name()
     )}
   </p>
   <p class="mt-4 text-sm leading-relaxed">

@@ -1,6 +1,6 @@
 defmodule BibleReaderWeb.ReadingHistoryLive do
   @moduledoc """
-  Reading history for the last seven calendar days in the user's profile timezone.
+  Full reading history grouped by calendar day in the user's profile timezone.
   """
   use BibleReaderWeb, :live_view
 
@@ -11,8 +11,6 @@ defmodule BibleReaderWeb.ReadingHistoryLive do
   alias BibleReaderWeb.RelativeTimeFormat
   alias BibleReaderWeb.EffectiveDate, as: EffectiveDateUI
 
-  @week_days 7
-
   @impl true
   def render(assigns) do
     ~H"""
@@ -22,7 +20,7 @@ defmodule BibleReaderWeb.ReadingHistoryLive do
           {gettext("Reading history")}
         </h1>
         <p class="mt-1 text-sm text-zinc-600">
-          {gettext("Chapters you read in the last %{days} days.", days: @week_days)}
+          {gettext("Chapters you have read, grouped by day.")}
         </p>
       </div>
 
@@ -30,7 +28,7 @@ defmodule BibleReaderWeb.ReadingHistoryLive do
         :if={@days == []}
         class="rounded-xl border border-zinc-200 bg-card p-6 text-sm text-zinc-600 shadow-sm"
       >
-        {gettext("No chapters read in the last %{days} days.", days: @week_days)}
+        {gettext("No chapters read yet.")}
       </div>
 
       <div :if={@days != []} class="space-y-8">
@@ -83,7 +81,7 @@ defmodule BibleReaderWeb.ReadingHistoryLive do
 
     days =
       user
-      |> ReadingPlan.recent_read_events_by_day(window_days: @week_days)
+      |> ReadingPlan.recent_read_events_by_day()
       |> Enum.map(fn day ->
         %{
           heading: day_heading(day.day_label, locale),
@@ -104,7 +102,6 @@ defmodule BibleReaderWeb.ReadingHistoryLive do
     socket
     |> assign(:page_title, gettext("Reading history"))
     |> assign(:locale_return_to, ~p"/read/history")
-    |> assign(:week_days, @week_days)
     |> assign(:days, days)
   end
 

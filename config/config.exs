@@ -12,7 +12,9 @@ config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
 config :biblereader,
   namespace: BibleReader,
   ecto_repos: [BibleReader.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime],
+  # Product branding — not translated; use BibleReader.Config.app_name/0 in UI.
+  app_name: "BibleReader"
 
 config :biblereader, BibleReaderWeb.Gettext,
   locales: ~w(en de),

@@ -2,17 +2,19 @@ defmodule BibleReader.ReadingPlan.EffectiveDate do
   @moduledoc """
   Validates and converts **effective read dates** for backdating chapter logs.
 
-  Users may choose a calendar day within the last seven days (in their profile
+  Users may choose a calendar day within the last 30 days (in their profile
   timezone). Reads logged on an effective date are stored with `read_at` set to
   **12:00 (noon) local time** on that day (converted to UTC). When the effective
   date is **today**, `read_at` is the current UTC instant instead.
 
-  This aligns with the seven-day reading history window.
+  **Window math:** `@window_days` is **30** — **today plus the prior 29 calendar
+  days** (30 distinct dates total, offsets `0..29` from today).
   """
 
+  alias BibleReader.I18n.CalendarFormat
   alias BibleReader.ReadingPlan.RelativeTime
 
-  @window_days 7
+  @window_days 30
 
   @doc "Number of calendar days (including today) selectable for backdating."
   def window_days, do: @window_days
@@ -83,14 +85,11 @@ defmodule BibleReader.ReadingPlan.EffectiveDate do
     date != RelativeTime.today_in_zone(timezone)
   end
 
-  @doc "Long formatted date for banners, e.g. \"Monday, Jun 16\"."
+  @doc "Long formatted date for banners, e.g. \"Monday, Jun 16\" or \"Montag, 16. Juni\"."
   @spec format_long(Date.t(), String.t()) :: String.t()
   def format_long(%Date{} = date, locale) when is_binary(locale) do
-    Calendar.strftime(date, long_date_pattern(locale))
+    CalendarFormat.format_long(date, locale)
   end
-
-  defp long_date_pattern("de"), do: "%A, %d. %B"
-  defp long_date_pattern(_), do: "%A, %b %-d"
 
   defp noon_utc(%Date{} = day, timezone) do
     case DateTime.new(day, ~T[12:00:00], timezone, Tzdata.TimeZoneDatabase) do

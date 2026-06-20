@@ -20,6 +20,14 @@ defmodule BibleReader.ScriptureTest do
     assert Enum.all?(books, & &1.in_protestant_canon)
   end
 
+  test "list_chapters_grouped_by_book_for_user loads chapters in one query", %{user: user} do
+    %{book: book, chapter: chapter} = ScriptureFixtures.book_and_chapter_fixture()
+
+    grouped = Scripture.list_chapters_grouped_by_book_for_user(user)
+    assert [chapter_row] = Map.get(grouped, book.id, [])
+    assert chapter_row.id == chapter.id
+  end
+
   describe "chapter navigation" do
     setup do
       %{book: book_a, chapters: [ch_a1, ch_a2]} =

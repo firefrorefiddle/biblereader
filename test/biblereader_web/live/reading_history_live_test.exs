@@ -20,8 +20,28 @@ defmodule BibleReaderWeb.ReadingHistoryLiveTest do
       {:ok, _view, html} = live(conn, ~p"/read/history")
 
       assert html =~ "Reading history"
+      assert html =~ "Chapters you have read, grouped by day."
       assert html =~ Scripture.book_display_name(book, "en")
       assert html =~ "Today"
+    end
+
+    test "includes reads older than seven days", %{
+      conn: conn,
+      user: user,
+      chapter: chapter,
+      book: book
+    } do
+      old =
+        DateTime.utc_now()
+        |> DateTime.add(-10 * 86_400, :second)
+        |> DateTime.truncate(:second)
+
+      assert {:ok, _} = ReadingPlan.log_chapter_read(user, chapter.id, old)
+
+      {:ok, _view, html} = live(conn, ~p"/read/history")
+
+      assert html =~ Scripture.book_display_name(book, "en")
+      refute html =~ "No chapters read yet."
     end
 
     test "renders German page for de locale", %{chapter: chapter} do
@@ -33,6 +53,7 @@ defmodule BibleReaderWeb.ReadingHistoryLiveTest do
 
       assert html =~ "Leseverlauf"
       refute html =~ ">Reading history<"
+      refute html =~ ">History<"
     end
   end
 

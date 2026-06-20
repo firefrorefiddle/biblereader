@@ -9,6 +9,7 @@ defmodule BibleReaderWeb.BookLive do
   alias BibleReader.ReadingPlan
   alias BibleReader.Scripture
   alias BibleReaderWeb.RelativeTimeFormat
+  alias BibleReaderWeb.ChapterGrid
   alias BibleReaderWeb.EffectiveDate, as: EffectiveDateUI
 
   @impl true
@@ -146,29 +147,7 @@ defmodule BibleReaderWeb.BookLive do
     chapters = Scripture.list_chapters_for_book(book.id)
 
     chapter_cells =
-      Enum.map(chapters, fn ch ->
-        read_count = Map.get(counts, ch.id, 0)
-        last = Map.get(last_at, ch.id)
-        bucket = ReadingPlan.age_bucket(read_count, last, timezone)
-
-        age_label =
-          if read_count > 0,
-            do:
-              last
-              |> ReadingPlan.relative_label(timezone)
-              |> RelativeTimeFormat.format(locale),
-            else: nil
-
-        %{
-          number: ch.chapter_number,
-          chapter_id: ch.id,
-          read_count: read_count,
-          age_label: age_label,
-          bucket: bucket,
-          has_note?: MapSet.member?(note_ids, ch.id),
-          to: ~p"/read/books/#{book.code}/#{ch.chapter_number}"
-        }
-      end)
+      ChapterGrid.build_cells(chapters, book, counts, last_at, note_ids, timezone, locale)
 
     chapters_read = Enum.count(chapters, fn ch -> Map.get(counts, ch.id, 0) > 0 end)
     total = length(chapters)
