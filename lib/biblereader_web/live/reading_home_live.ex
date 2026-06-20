@@ -9,6 +9,7 @@ defmodule BibleReaderWeb.ReadingHomeLive do
   alias BibleReader.ReadingPlan
   alias BibleReader.Scripture
   alias BibleReaderWeb.RelativeTimeFormat
+  alias BibleReaderWeb.EffectiveDate, as: EffectiveDateUI
 
   @impl true
   def render(assigns) do
@@ -48,9 +49,19 @@ defmodule BibleReaderWeb.ReadingHomeLive do
             value={to_string(@stats.distinct_chapters_read_at_least_once)}
             label={gettext("chapters read")}
           />
-          <.progress_stat value={to_string(@week_reads)} label={gettext("this week")} />
+          <.link
+            navigate={~p"/read/history"}
+            class="block rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >
+            <.progress_stat value={to_string(@week_reads)} label={gettext("this week")} />
+          </.link>
           <.progress_stat value={to_string(@note_count)} label={gettext("notes")} />
         </div>
+        <p class="mt-2 text-xs text-zinc-500">
+          <.link navigate={~p"/read/history"} class="text-primary hover:underline">
+            {gettext("View reading history")}
+          </.link>
+        </p>
       </section>
 
       <section class="mb-10">
@@ -122,6 +133,14 @@ defmodule BibleReaderWeb.ReadingHomeLive do
   end
 
   @impl true
+  def handle_event("open_effective_date_picker", _params, socket) do
+    {:noreply, EffectiveDateUI.open_picker(socket)}
+  end
+
+  def handle_event("close_effective_date_picker", _params, socket) do
+    {:noreply, EffectiveDateUI.close_picker(socket)}
+  end
+
   def handle_event("toggle_more_stats", _params, socket) do
     {:noreply, assign(socket, :show_more_stats, !socket.assigns.show_more_stats)}
   end

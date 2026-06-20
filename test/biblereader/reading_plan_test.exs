@@ -6,6 +6,7 @@ defmodule BibleReader.ReadingPlanTest do
   alias BibleReader.Accounts
   alias BibleReader.ReadingPlan
   alias BibleReader.ReadingPlan.RelativeTime
+  alias BibleReader.ReadingPlan.EffectiveDate
   alias BibleReader.Repo
   alias BibleReader.Scripture.Chapter
   alias BibleReader.ScriptureFixtures
@@ -20,6 +21,27 @@ defmodule BibleReader.ReadingPlanTest do
     assert {:ok, read} = ReadingPlan.log_chapter_read(user, chapter.id)
     assert read.user_id == user.id
     assert read.chapter_id == chapter.id
+  end
+
+  test "undo_last_chapter_read removes the most recent event", %{user: user, chapter: chapter} do
+    old =
+      DateTime.utc_now()
+      |> DateTime.add(-3600, :second)
+      |> DateTime.truncate(:second)
+
+    assert {:ok, _} = ReadingPlan.log_chapter_read(user, chapter.id, old)
+    assert {:ok, latest} = ReadingPlan.log_chapter_read(user, chapter.id)
+
+    assert {:ok, deleted} = ReadingPlan.undo_last_chapter_read(user, chapter.id)
+    assert deleted.id == latest.id
+    assert ReadingPlan.read_counts_by_chapter_id(user.id)[chapter.id] == 1
+
+    assert {:ok, _} = ReadingPlan.undo_last_chapter_read(user, chapter.id)
+    refute Map.has_key?(ReadingPlan.read_counts_by_chapter_id(user.id), chapter.id)
+  end
+
+  test "undo_last_chapter_read returns not_found when no events", %{user: user, chapter: chapter} do
+    assert {:error, :not_found} = ReadingPlan.undo_last_chapter_read(user, chapter.id)
   end
 
   test "read_counts_by_chapter_id aggregates", %{user: user, chapter: chapter} do
@@ -44,6 +66,38 @@ defmodule BibleReader.ReadingPlanTest do
   test "chapters_read_in_window", %{user: user, chapter: chapter} do
     assert {:ok, _} = ReadingPlan.log_chapter_read(user, chapter.id)
     assert ReadingPlan.chapters_read_in_window(user, 7) >= 1
+  end
+
+  test "recent_read_events returns events in calendar week window", %{
+    user: user,
+    chapter: chapter
+  } do
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
+    assert {:ok, _} = ReadingPlan.log_chapter_read(user, chapter.id, now)
+
+    [event] = ReadingPlan.recent_read_events(user, window_days: 7)
+    assert event.chapter_id == chapter.id
+    assert event.chapter.book.id == chapter.book_id
+  end
+
+  test "recent_read_events excludes reads before calendar window", %{user: user, chapter: chapter} do
+    old =
+      DateTime.utc_now()
+      |> DateTime.add(-8 * 86_400, :second)
+      |> DateTime.truncate(:second)
+
+    assert {:ok, _} = ReadingPlan.log_chapter_read(user, chapter.id, old)
+    assert ReadingPlan.recent_read_events(user, window_days: 7) == []
+  end
+
+  test "recent_read_events_by_day groups by user timezone day", %{user: user, chapter: chapter} do
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
+    assert {:ok, _} = ReadingPlan.log_chapter_read(user, chapter.id, now)
+
+    [day] = ReadingPlan.recent_read_events_by_day(user, window_days: 7)
+    assert day.day_label == :today
+    assert length(day.events) == 1
+    assert hd(day.events).chapter_id == chapter.id
   end
 
   test "recently_read_chapters", %{user: user, chapter: chapter, book: book} do
@@ -100,9 +154,28 @@ defmodule BibleReader.ReadingPlanTest do
     assert row.last_chapter_number == 1
   end
 
+  test "log with effective read_at groups in recent history", %{user: user, chapter: chapter} do
+    today = RelativeTime.today_in_zone(user.timezone)
+    past = Date.add(today, -2)
+    read_at = EffectiveDate.read_at_for(past, user.timezone)
+
+    assert {:ok, _} = ReadingPlan.log_chapter_read(user, chapter.id, read_at)
+
+    days = ReadingPlan.recent_read_events_by_day(user, window_days: 7)
+    matching = Enum.find(days, fn day -> day.date == past end)
+    assert matching
+    assert hd(matching.events).chapter_id == chapter.id
+  end
+
   test "RelativeTime label today", %{user: user} do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
     assert RelativeTime.label(now, user.timezone) == :today
+  end
+
+  test "RelativeTime label_for_date and start_of_day_utc", %{user: user} do
+    today = RelativeTime.today_in_zone(user.timezone)
+    assert RelativeTime.label_for_date(today, user.timezone) == :today
+    assert %DateTime{} = RelativeTime.start_of_day_utc(today, user.timezone)
   end
 
   test "age_bucket unread", %{user: user} do

@@ -47,6 +47,7 @@ default_translations = %{
   "Continue %{book} %{chapter}" => "Weiter %{book} %{chapter}",
   "Continue reading" => "Weiterlesen",
   "Could not log read." => "Lesen konnte nicht protokolliert werden.",
+  "Could not undo read." => "Lesen konnte nicht rückgängig gemacht werden.",
   "Could not save note." => "Notiz konnte nicht gespeichert werden.",
   "Create an account" => "Konto erstellen",
   "Creating account..." => "Konto wird erstellt…",
@@ -96,6 +97,9 @@ default_translations = %{
   "Manage your account email address and password settings" =>
     "E-Mail-Adresse und Passwort Ihres Kontos verwalten",
   "Mark as read" => "Als gelesen markieren",
+  "Mark %{book} %{number} as read" => "%{book} %{number} als gelesen markieren",
+  "Open %{book} %{number}" => "%{book} %{number} öffnen",
+  "Open %{book} chapter %{number}" => "Kapitel %{number} von %{book} öffnen",
   "More stats" => "Mehr Statistik",
   "New password" => "Neues Passwort",
   "No confirmation instructions received?" =>
@@ -145,6 +149,7 @@ default_translations = %{
   "Update email instructions" => "Anleitung zur E-Mail-Aktualisierung",
   "User confirmation link is invalid or it has expired." =>
     "Der Bestätigungslink ist ungültig oder abgelaufen.",
+  "Undo" => "Rückgängig",
   "User confirmed successfully." => "Benutzer erfolgreich bestätigt.",
   "We'll send a new confirmation link to your inbox" =>
     "Wir senden einen neuen Bestätigungslink an Ihr Postfach",

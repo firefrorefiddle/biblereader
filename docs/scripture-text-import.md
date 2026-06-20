@@ -23,7 +23,7 @@ User notes, read logs, and highlights are **overlays** on catalog chapters — t
 - **Command:** `mix scripture.import deuelbbk`
 - **Source:** Elberfelder USFM under `priv/scripture/usfm/deuelbbk/*.usfm`. First-time setup can unzip `deuelbbk_usfm.zip` from the project root (not committed; copyrighted); **the zip can be deleted** once `.extracted` exists and the 66 book files are present.
 - **Translations:** Only `deuelbbk` is implemented; other codes return `{:error, {:unsupported_translation, _}}`.
-- **Book matching:** Filename / `\id` code must match `books.code` in the scripture catalog. Known alias: **JOL → JOE**. Unknown books are skipped with a warning.
+- **Book matching:** Filename / `\id` code must match `books.code` in the scripture catalog. Known alias: **JOL → JOE**. Unknown books are skipped with a warning. **Joel** uses **4 chapters** in this catalog (matches Elberfelder USFM; some English Bibles use 3).
 - **Re-import:** Per-chapter replace (delete footnotes/verses/document, then insert). Safe to re-run after parser fixes.
 - **Not in `mix setup`:** Import is slow (~1 min) and optional; chapter pages work without text.
 

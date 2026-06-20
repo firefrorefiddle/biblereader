@@ -18,9 +18,52 @@ defmodule BibleReader.ReadingPlan.RelativeTime do
   """
   @spec label(DateTime.t() | nil, String.t()) :: label() | nil
   def label(%DateTime{} = read_at, timezone) when is_binary(timezone) do
-    read_day = read_at |> shift_to_zone(timezone) |> DateTime.to_date()
-    today = today_in_zone(timezone)
-    days = Date.diff(today, read_day)
+    label_for_date(date_in_zone(read_at, timezone), timezone)
+  end
+
+  def label(nil, _timezone), do: nil
+
+  @doc """
+  Calendar date for `read_at` in the given IANA timezone.
+  """
+  @spec date_in_zone(DateTime.t(), String.t()) :: Date.t()
+  def date_in_zone(%DateTime{} = dt, timezone) when is_binary(timezone) do
+    dt |> shift_to_zone(timezone) |> DateTime.to_date()
+  end
+
+  @doc """
+  Today's calendar date in the given IANA timezone.
+  """
+  @spec today_in_zone(String.t()) :: Date.t()
+  def today_in_zone(timezone) when is_binary(timezone) do
+    DateTime.utc_now()
+    |> shift_to_zone(timezone)
+    |> DateTime.to_date()
+  end
+
+  @doc """
+  UTC instant for midnight at the start of `day` in `timezone`.
+  """
+  @spec start_of_day_utc(Date.t(), String.t()) :: DateTime.t()
+  def start_of_day_utc(%Date{} = day, timezone) when is_binary(timezone) do
+    case DateTime.new(day, ~T[00:00:00], timezone, Tzdata.TimeZoneDatabase) do
+      {:ok, local} ->
+        case DateTime.shift_zone(local, "Etc/UTC", Tzdata.TimeZoneDatabase) do
+          {:ok, utc} -> utc
+          {:error, _} -> DateTime.utc_now()
+        end
+
+      {:error, _} ->
+        DateTime.utc_now()
+    end
+  end
+
+  @doc """
+  Structured day heading for a calendar date relative to today in `timezone`.
+  """
+  @spec label_for_date(Date.t(), String.t()) :: label()
+  def label_for_date(%Date{} = date, timezone) when is_binary(timezone) do
+    days = Date.diff(today_in_zone(timezone), date)
 
     cond do
       days == 0 -> :today
@@ -30,8 +73,6 @@ defmodule BibleReader.ReadingPlan.RelativeTime do
       true -> {:years, div(days, 365)}
     end
   end
-
-  def label(nil, _timezone), do: nil
 
   @doc """
   Styling bucket from last read instant and read count.
@@ -48,9 +89,8 @@ defmodule BibleReader.ReadingPlan.RelativeTime do
   end
 
   defp bucket_for_date(%DateTime{} = read_at, timezone) do
-    read_day = read_at |> shift_to_zone(timezone) |> DateTime.to_date()
-    today = today_in_zone(timezone)
-    days = Date.diff(today, read_day)
+    read_day = date_in_zone(read_at, timezone)
+    days = Date.diff(today_in_zone(timezone), read_day)
 
     cond do
       days == 0 -> :today
@@ -72,12 +112,6 @@ defmodule BibleReader.ReadingPlan.RelativeTime do
 
   defp datetime_pattern("de"), do: "%d.%m.%Y, %H:%M"
   defp datetime_pattern(_), do: "%b %-d, %Y at %-I:%M %p"
-
-  defp today_in_zone(timezone) do
-    DateTime.utc_now()
-    |> shift_to_zone(timezone)
-    |> DateTime.to_date()
-  end
 
   defp shift_to_zone(%DateTime{} = dt, timezone) do
     case DateTime.shift_zone(dt, timezone, Tzdata.TimeZoneDatabase) do

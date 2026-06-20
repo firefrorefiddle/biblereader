@@ -749,3 +749,13 @@ msgstr "heute"
 #, elixir-autogen, elixir-format
 msgid "yesterday"
 msgstr "gestern"
+
+#: lib/biblereader_web/live/chapter_live.ex:97
+#, elixir-autogen, elixir-format
+msgid "Next chapter: %{book} %{number}"
+msgstr "Next chapter: %{book} %{number}"
+
+#: lib/biblereader_web/live/chapter_live.ex:81
+#, elixir-autogen, elixir-format
+msgid "Previous chapter: %{book} %{number}"
+msgstr "Previous chapter: %{book} %{number}"

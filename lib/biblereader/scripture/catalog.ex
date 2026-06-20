@@ -52,7 +52,7 @@ defmodule BibleReader.Scripture.Catalog do
       {"EZK", "Ezekiel", 48},
       {"DAN", "Daniel", 12},
       {"HOS", "Hosea", 14},
-      {"JOE", "Joel", 3},
+      {"JOE", "Joel", 4},
       {"AMO", "Amos", 9},
       {"OBA", "Obadiah", 1},
       {"JON", "Jonah", 4},

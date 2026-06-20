@@ -6,6 +6,10 @@ defmodule BibleReaderWeb.ReadingComponents do
   use Gettext, backend: BibleReaderWeb.Gettext
   use BibleReaderWeb, :verified_routes
 
+  import BibleReaderWeb.CoreComponents, only: [icon: 1, modal: 1]
+
+  alias Phoenix.LiveView.JS
+
   alias BibleReader.ReadingPlan
   alias BibleReaderWeb.RelativeTimeFormat
 
@@ -113,6 +117,7 @@ defmodule BibleReaderWeb.ReadingComponents do
   end
 
   attr :number, :integer, required: true
+  attr :chapter_id, :integer, required: true
   attr :read_count, :integer, required: true
   attr :age_label, :string, default: nil
   attr :bucket, :atom, required: true
@@ -126,31 +131,49 @@ defmodule BibleReaderWeb.ReadingComponents do
     assigns = assign(assigns, :cell_class, base)
 
     ~H"""
-    <.link
-      navigate={@to}
-      title={gettext("%{book} %{number}", book: @book_name, number: @number)}
-      aria-label={gettext("%{book} chapter %{number}", book: @book_name, number: @number)}
-      class={[
-        "relative flex min-h-[2rem] min-w-[2rem] flex-col items-center justify-center border px-0.5 py-0.5 text-[11px] font-medium tabular-nums leading-none transition sm:min-h-[2.125rem] sm:min-w-[2.125rem] sm:text-xs",
-        @cell_class,
-        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0"
-      ]}
-    >
-      <span
-        :if={@has_note?}
-        class="absolute right-0.5 top-0.5 hidden h-1.5 w-1.5 rounded-full bg-accent sm:block"
-      />
-      <span>{@number}</span>
-      <span :if={@age_label} class="mt-0.5 text-[9px] font-normal leading-none opacity-90">
-        {@age_label}
-      </span>
-      <span
-        :if={@read_count > 1}
-        class="mt-0.5 hidden text-[9px] font-semibold leading-none sm:inline"
+    <div class={[
+      "group relative flex min-h-[2.75rem] min-w-[2rem] flex-col border sm:min-h-[3rem] sm:min-w-[2.125rem]",
+      @cell_class
+    ]}>
+      <.link
+        navigate={@to}
+        title={gettext("Open %{book} %{number}", book: @book_name, number: @number)}
+        aria-label={gettext("Open %{book} chapter %{number}", book: @book_name, number: @number)}
+        class={[
+          "relative flex flex-1 flex-col items-center justify-center px-0.5 py-0.5 text-[11px] font-medium tabular-nums leading-none transition sm:text-xs",
+          "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0"
+        ]}
       >
-        ×{@read_count}
-      </span>
-    </.link>
+        <span
+          :if={@has_note?}
+          class="absolute right-0.5 top-0.5 hidden h-1.5 w-1.5 rounded-full bg-accent sm:block"
+        />
+        <span>{@number}</span>
+        <span :if={@age_label} class="mt-0.5 text-[9px] font-normal leading-none opacity-90">
+          {@age_label}
+        </span>
+        <span
+          :if={@read_count > 1}
+          class="mt-0.5 hidden text-[9px] font-semibold leading-none sm:inline"
+        >
+          ×{@read_count}
+        </span>
+      </.link>
+      <button
+        type="button"
+        phx-click="log_read"
+        phx-value-chapter-id={@chapter_id}
+        aria-label={gettext("Mark %{book} %{number} as read", book: @book_name, number: @number)}
+        title={gettext("Mark as read")}
+        class={[
+          "flex w-full items-center justify-center border-t border-inherit py-0.5 text-zinc-600 transition",
+          "hover:bg-emerald-100 hover:text-emerald-900",
+          "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0"
+        ]}
+      >
+        <.icon name="hero-check-mini" class="h-3 w-3" />
+      </button>
+    </div>
     """
   end
 
@@ -171,6 +194,23 @@ defmodule BibleReaderWeb.ReadingComponents do
         <span>{@age_label}</span>
         <span :if={@read_count > 0} class="text-zinc-500">×{@read_count}</span>
       </span>
+    </.link>
+    """
+  end
+
+  attr :book_name, :string, required: true
+  attr :chapter_number, :integer, required: true
+  attr :read_at_label, :string, required: true
+  attr :book_code, :string, required: true
+
+  def history_read_row(assigns) do
+    ~H"""
+    <.link
+      navigate={~p"/read/books/#{@book_code}/#{@chapter_number}"}
+      class="flex items-center justify-between gap-4 px-4 py-2.5 text-sm hover:bg-zinc-50"
+    >
+      <span class="font-medium text-zinc-900">{@book_name} {@chapter_number}</span>
+      <span class="shrink-0 tabular-nums text-zinc-600">{@read_at_label}</span>
     </.link>
     """
   end
@@ -259,4 +299,98 @@ defmodule BibleReaderWeb.ReadingComponents do
   defp eta_text(:very_long), do: gettext("a very long time")
   defp eta_text(days) when is_integer(days), do: gettext("about %{days} days", days: days)
   defp eta_text(_), do: nil
+
+  attr :label, :string, required: true
+  attr :return_to, :string, required: true
+
+  def effective_date_banner(assigns) do
+    ~H"""
+    <div
+      role="status"
+      class="mb-6 flex flex-col gap-3 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-amber-950 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p class="text-sm font-medium">
+        {gettext("Logging reads for: %{date}", date: @label)}
+      </p>
+      <.form for={%{}} action={~p"/read/effective_date"} method="post" class="shrink-0">
+        <input type="hidden" name="return_to" value={@return_to} />
+        <input type="hidden" name="date" value="today" />
+        <button
+          type="submit"
+          class="rounded-lg border border-amber-400 bg-white px-3 py-1.5 text-sm font-medium text-amber-950 hover:bg-amber-100"
+        >
+          {gettext("Back to today")}
+        </button>
+      </.form>
+    </div>
+    """
+  end
+
+  attr :open?, :boolean, required: true
+  attr :options, :list, required: true
+  attr :return_to, :string, required: true
+
+  def effective_date_picker_modal(assigns) do
+    ~H"""
+    <.modal
+      id="effective-date-picker"
+      show={@open?}
+      on_cancel={JS.push("close_effective_date_picker")}
+    >
+      <div id="effective-date-picker-description">
+        <h2 id="effective-date-picker-title" class="text-lg font-semibold text-zinc-900">
+          {gettext("Set effective date")}
+        </h2>
+        <p class="mt-2 text-sm text-zinc-600">
+          {gettext(
+            "Log chapters as if you read them on another day within the last %{days} days.",
+            days: BibleReader.ReadingPlan.EffectiveDate.window_days()
+          )}
+        </p>
+        <.form
+          for={%{}}
+          as={:effective_date}
+          action={~p"/read/effective_date"}
+          method="post"
+          class="mt-6 space-y-2"
+        >
+          <input type="hidden" name="return_to" value={@return_to} />
+          <%= for option <- @options do %>
+            <label class={[
+              "flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 text-sm transition",
+              if(option.selected?,
+                do: "border-primary bg-primary-muted",
+                else: "border-zinc-200 hover:border-zinc-300"
+              )
+            ]}>
+              <input
+                type="radio"
+                name="date"
+                value={if option.past?, do: option.iso, else: "today"}
+                checked={option.selected?}
+                class="text-primary focus:ring-primary"
+              />
+              <span class="font-medium text-zinc-900">{option.label}</span>
+            </label>
+          <% end %>
+          <div class="mt-6 flex justify-end gap-3">
+            <button
+              type="button"
+              phx-click="close_effective_date_picker"
+              class="rounded-lg px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100"
+            >
+              {gettext("Cancel")}
+            </button>
+            <button
+              type="submit"
+              class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90"
+            >
+              {gettext("Apply")}
+            </button>
+          </div>
+        </.form>
+      </div>
+    </.modal>
+    """
+  end
 end

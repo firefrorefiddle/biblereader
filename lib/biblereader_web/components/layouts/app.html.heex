@@ -8,6 +8,17 @@
         <.link navigate={~p"/read"} class="text-zinc-700 hover:text-zinc-900">
           {gettext("Home")}
         </.link>
+        <.link navigate={~p"/read/history"} class="text-zinc-700 hover:text-zinc-900">
+          {gettext("History")}
+        </.link>
+        <button
+          :if={assigns[:reading_area?]}
+          type="button"
+          phx-click="open_effective_date_picker"
+          class="text-zinc-700 hover:text-zinc-900"
+        >
+          {gettext("Set effective date")}
+        </button>
       <% end %>
     </div>
     <div class="flex items-center gap-4 font-medium leading-6 text-zinc-700">
@@ -55,6 +66,17 @@
 <main class="px-4 py-10 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-5xl">
     <.flash_group flash={@flash} />
+    <.effective_date_banner
+      :if={assigns[:effective_date_active?]}
+      label={@effective_date_label}
+      return_to={@effective_date_return_to}
+    />
+    <.effective_date_picker_modal
+      :if={assigns[:reading_area?]}
+      open?={@effective_date_picker_open?}
+      options={@effective_date_options}
+      return_to={@effective_date_return_to}
+    />
     {@inner_content}
   </div>
 </main>

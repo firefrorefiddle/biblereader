@@ -135,6 +135,46 @@ defmodule BibleReaderWeb.CoreComponents do
   end
 
   @doc """
+  Flash for a chapter read with inline undo (no generic success title).
+  """
+  attr :flash, :map, required: true, doc: "the map of flash messages"
+
+  def chapter_read_flash(assigns) do
+    ~H"""
+    <div
+      :if={chapter_id = Phoenix.Flash.get(@flash, :chapter_read)}
+      id="flash-chapter-read"
+      role="alert"
+      class={[
+        "fixed top-2 right-2 mr-2 w-80 sm:w-96 z-50 rounded-lg p-3 ring-1",
+        "bg-emerald-50 text-emerald-800 ring-emerald-500 fill-cyan-900"
+      ]}
+    >
+      <p class="text-sm leading-5">{gettext("Chapter marked as read.")}</p>
+      <div class="mt-2 flex items-center gap-2">
+        <button
+          type="button"
+          phx-click={JS.push("undo_read", value: %{"chapter-id" => chapter_id})}
+          class="rounded-md bg-emerald-800/10 px-2.5 py-1 text-sm font-medium text-emerald-900 hover:bg-emerald-800/20"
+        >
+          {gettext("Undo")}
+        </button>
+      </div>
+      <button
+        type="button"
+        phx-click={
+          JS.push("lv:clear-flash", value: %{key: "chapter_read"}) |> hide("#flash-chapter-read")
+        }
+        class="group absolute top-1 right-1 p-2"
+        aria-label={gettext("close")}
+      >
+        <.icon name="hero-x-mark-solid" class="h-5 w-5 opacity-40 group-hover:opacity-70" />
+      </button>
+    </div>
+    """
+  end
+
+  @doc """
   Shows the flash group with standard titles and content.
 
   ## Examples
@@ -147,6 +187,7 @@ defmodule BibleReaderWeb.CoreComponents do
   def flash_group(assigns) do
     ~H"""
     <div id={@id}>
+      <.chapter_read_flash flash={@flash} />
       <.flash kind={:info} title={gettext("Success!")} flash={@flash} />
       <.flash kind={:error} title={gettext("Error!")} flash={@flash} />
       <.flash

@@ -56,20 +56,28 @@ defmodule BibleReaderWeb.ScriptureComponents do
   attr :footnote_glyphs, :map, required: true
 
   defp paragraph_block(assigns) do
+    nodes = assigns.block["content"] || []
+
+    assigns =
+      assigns
+      |> assign(:nodes, nodes)
+      |> assign(:node_pairs, Enum.with_index(nodes))
+
     ~H"""
     <p :if={@block["type"] == "paragraph"} class="indent-0">
-      <%= for node <- @block["content"] || [] do %>
-        <.inline_node
-          node={node}
-          footnotes_by_id={@footnotes_by_id}
-          footnote_glyphs={@footnote_glyphs}
-        />
-      <% end %>
+      <.inline_node
+        :for={{node, index} <- @node_pairs}
+        node={node}
+        next_node={Enum.at(@nodes, index + 1)}
+        footnotes_by_id={@footnotes_by_id}
+        footnote_glyphs={@footnote_glyphs}
+      />
     </p>
     """
   end
 
   attr :node, :map, required: true
+  attr :next_node, :map, default: nil
   attr :footnotes_by_id, :map, required: true
   attr :footnote_glyphs, :map, required: true
 
@@ -82,19 +90,17 @@ defmodule BibleReaderWeb.ScriptureComponents do
   end
 
   defp inline_node(%{node: %{"type" => "footnote_ref", "id" => id}} = assigns) do
+    glyph = footnote_glyph(assigns.footnote_glyphs, id)
+
     assigns =
       assigns
       |> assign(:id, id)
-      |> assign(:glyph, footnote_glyph(assigns.footnote_glyphs, id))
+      |> assign(:glyph, glyph)
+      |> assign(:footnote_markup, footnote_markup(id, glyph))
+      |> assign(:trail_space, footnote_trailing_space(assigns.next_node))
 
     ~H"""
-    <a
-      href={"#footnote-#{@id}"}
-      class="mx-0.5 align-super text-xs font-medium text-primary no-underline hover:underline"
-      aria-label={"Footnote #{@glyph}"}
-    >
-      {@glyph}
-    </a>
+    {@footnote_markup}{@trail_space}
     """
   end
 
@@ -114,6 +120,21 @@ defmodule BibleReaderWeb.ScriptureComponents do
 
   defp footnote_glyph(glyphs, id), do: Map.get(glyphs, id, "*")
 
+  defp footnote_markup(id, glyph) do
+    ~s(<a href="#footnote-#{id}" class="align-super text-xs font-medium text-primary no-underline hover:underline" aria-label="Footnote #{glyph}">#{glyph}</a>)
+    |> Phoenix.HTML.raw()
+  end
+
   defp glyph_for_number(number) when number in 1..9, do: Enum.at(@superscript, number)
   defp glyph_for_number(number), do: Integer.to_string(number)
+
+  defp footnote_trailing_space(%{"type" => "text", "text" => text}) when text != "" do
+    if String.match?(text, ~r/^[\.,;:!?\)\]'"-]/) do
+      ""
+    else
+      " "
+    end
+  end
+
+  defp footnote_trailing_space(_), do: ""
 end

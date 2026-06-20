@@ -49,6 +49,29 @@ defmodule BibleReader.ReadingPlan do
   end
 
   @doc """
+  Deletes the most recent read event for `chapter_id` belonging to `user`.
+
+  Returns `{:error, :not_found}` when there is no matching event.
+  """
+  def undo_last_chapter_read(%User{id: user_id}, chapter_id) when is_integer(chapter_id) do
+    case from(cr in ChapterRead,
+           where: cr.user_id == ^user_id and cr.chapter_id == ^chapter_id,
+           order_by: [desc: cr.read_at, desc: cr.id],
+           limit: 1
+         )
+         |> Repo.one() do
+      nil ->
+        {:error, :not_found}
+
+      read ->
+        case Repo.delete(read) do
+          {:ok, deleted} -> {:ok, deleted}
+          {:error, _} = error -> error
+        end
+    end
+  end
+
+  @doc """
   Map of `chapter_id` => total read count for this user (all time).
   """
   def read_counts_by_chapter_id(user_id) when is_integer(user_id) do
@@ -98,6 +121,54 @@ defmodule BibleReader.ReadingPlan do
       select: count(cr.id)
     )
     |> Repo.one()
+  end
+
+  @doc """
+  Read events from the last `window_days` **calendar days** in the user's profile
+  timezone (including today), newest first. Each row preloads `chapter` and `chapter.book`.
+  """
+  def recent_read_events(%User{} = user, opts \\ []) do
+    window_days = Keyword.get(opts, :window_days, @week_window_days)
+    timezone = user.timezone || "Etc/UTC"
+    today = RelativeTime.today_in_zone(timezone)
+    earliest_day = Date.add(today, -(window_days - 1))
+    window_start = RelativeTime.start_of_day_utc(earliest_day, timezone)
+    now = DateTime.utc_now()
+    scope_ids = chapter_ids_in_scope(user)
+
+    if scope_ids == [] do
+      []
+    else
+      from(cr in ChapterRead,
+        where:
+          cr.user_id == ^user.id and cr.chapter_id in ^scope_ids and
+            cr.read_at >= ^window_start and cr.read_at <= ^now,
+        order_by: [desc: cr.read_at],
+        preload: [chapter: :book]
+      )
+      |> Repo.all()
+    end
+  end
+
+  @doc """
+  Groups `recent_read_events/2` by calendar day in the user's timezone, newest day first.
+
+  Returns `[%{{date, day_label, events}}]` where each event is the preloaded `ChapterRead`.
+  """
+  def recent_read_events_by_day(%User{} = user, opts \\ []) do
+    timezone = user.timezone || "Etc/UTC"
+
+    user
+    |> recent_read_events(opts)
+    |> Enum.group_by(&RelativeTime.date_in_zone(&1.read_at, timezone))
+    |> Enum.sort_by(fn {date, _} -> date end, {:desc, Date})
+    |> Enum.map(fn {date, events} ->
+      %{
+        date: date,
+        day_label: RelativeTime.label_for_date(date, timezone),
+        events: events
+      }
+    end)
   end
 
   @doc """

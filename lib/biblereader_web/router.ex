@@ -75,12 +75,23 @@ defmodule BibleReaderWeb.Router do
         {BibleReaderWeb.Locale, :set_locale},
         {BibleReaderWeb.UserAuth, :ensure_authenticated}
       ] do
-      live "/read", ReadingHomeLive, :index
-      live "/read/books/:book_code", BookLive, :show
-      live "/read/books/:book_code/:chapter", ChapterLive, :show
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
     end
+
+    live_session :reading,
+      on_mount: [
+        {BibleReaderWeb.Locale, :set_locale},
+        {BibleReaderWeb.UserAuth, :ensure_authenticated},
+        {BibleReaderWeb.EffectiveDate, :assign_effective_date}
+      ] do
+      live "/read", ReadingHomeLive, :index
+      live "/read/history", ReadingHistoryLive, :index
+      live "/read/books/:book_code", BookLive, :show
+      live "/read/books/:book_code/:chapter", ChapterLive, :show
+    end
+
+    post "/read/effective_date", EffectiveDateController, :update
   end
 
   scope "/", BibleReaderWeb do

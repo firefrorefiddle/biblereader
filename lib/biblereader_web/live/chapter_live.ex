@@ -11,6 +11,7 @@ defmodule BibleReaderWeb.ChapterLive do
   alias BibleReader.Scripture
   alias BibleReader.ScriptureText
   alias BibleReaderWeb.RelativeTimeFormat
+  alias BibleReaderWeb.EffectiveDate, as: EffectiveDateUI
 
   @impl true
   def render(assigns) do
@@ -66,6 +67,43 @@ defmodule BibleReaderWeb.ChapterLive do
               </p>
             </div>
           </div>
+
+          <nav
+            :if={@prev_chapter || @next_chapter}
+            class="mt-6 flex items-center justify-between gap-4 border-t border-zinc-200 pt-4 text-sm"
+          >
+            <.link
+              :if={@prev_chapter}
+              navigate={
+                ~p"/read/books/#{@prev_chapter.book.code}/#{@prev_chapter.chapter.chapter_number}"
+              }
+              class="text-primary hover:underline"
+              aria-label={
+                gettext("Previous chapter: %{book} %{number}",
+                  book: @prev_chapter.book_name,
+                  number: @prev_chapter.chapter.chapter_number
+                )
+              }
+            >
+              ← {@prev_chapter.book_name} {@prev_chapter.chapter.chapter_number}
+            </.link>
+            <span :if={is_nil(@prev_chapter)} class="flex-1" />
+            <.link
+              :if={@next_chapter}
+              navigate={
+                ~p"/read/books/#{@next_chapter.book.code}/#{@next_chapter.chapter.chapter_number}"
+              }
+              class="ml-auto text-primary hover:underline"
+              aria-label={
+                gettext("Next chapter: %{book} %{number}",
+                  book: @next_chapter.book_name,
+                  number: @next_chapter.chapter.chapter_number
+                )
+              }
+            >
+              {@next_chapter.book_name} {@next_chapter.chapter.chapter_number} →
+            </.link>
+          </nav>
         </div>
 
         <div class="mt-8 space-y-8 lg:mt-0">
@@ -138,12 +176,23 @@ defmodule BibleReaderWeb.ChapterLive do
   end
 
   @impl true
+  def handle_event("open_effective_date_picker", _params, socket) do
+    {:noreply, EffectiveDateUI.open_picker(socket)}
+  end
+
+  def handle_event("close_effective_date_picker", _params, socket) do
+    {:noreply, EffectiveDateUI.close_picker(socket)}
+  end
+
   def handle_event("log_read", _params, socket) do
-    case ReadingPlan.log_chapter_read(socket.assigns.current_user, socket.assigns.chapter.id) do
+    user = Accounts.get_user!(socket.assigns.current_user.id)
+    read_at = EffectiveDateUI.read_at_for_logging(user, socket.assigns.effective_date)
+
+    case ReadingPlan.log_chapter_read(user, socket.assigns.chapter.id, read_at) do
       {:ok, _} ->
         {:noreply,
          socket
-         |> put_flash(:info, gettext("Chapter marked as read."))
+         |> put_flash(:chapter_read, Integer.to_string(socket.assigns.chapter.id))
          |> load_chapter(
            Accounts.get_user!(socket.assigns.current_user.id),
            socket.assigns.book,
@@ -153,6 +202,24 @@ defmodule BibleReaderWeb.ChapterLive do
 
       {:error, _} ->
         {:noreply, put_flash(socket, :error, gettext("Could not log read."))}
+    end
+  end
+
+  def handle_event("undo_read", %{"chapter-id" => chapter_id_str}, socket) do
+    user = Accounts.get_user!(socket.assigns.current_user.id)
+    chapter = socket.assigns.chapter
+
+    with {chapter_id, ""} <- Integer.parse(chapter_id_str),
+         true <- chapter_id == chapter.id,
+         {:ok, _} <- ReadingPlan.undo_last_chapter_read(user, chapter_id) do
+      {:noreply,
+       socket
+       |> clear_flash(:chapter_read)
+       |> load_chapter(Accounts.get_user!(user.id), socket.assigns.book, chapter)
+       |> assign(:note_saved, false)}
+    else
+      _ ->
+        {:noreply, put_flash(socket, :error, gettext("Could not undo read."))}
     end
   end
 
@@ -206,6 +273,32 @@ defmodule BibleReaderWeb.ChapterLive do
         ScriptureText.get_chapter_content(translation, chapter.id)
       end
 
+    prev_chapter =
+      case Scripture.previous_chapter_for_user(user, book, chapter) do
+        nil ->
+          nil
+
+        %{book: prev_book, chapter: prev} ->
+          %{
+            book: prev_book,
+            chapter: prev,
+            book_name: Scripture.book_display_name(prev_book, locale)
+          }
+      end
+
+    next_chapter =
+      case Scripture.next_chapter_for_user(user, book, chapter) do
+        nil ->
+          nil
+
+        %{book: next_book, chapter: next} ->
+          %{
+            book: next_book,
+            chapter: next,
+            book_name: Scripture.book_display_name(next_book, locale)
+          }
+      end
+
     socket
     |> assign(:page_title, "#{book_name} #{chapter.chapter_number}")
     |> assign(:locale_return_to, ~p"/read/books/#{book.code}/#{chapter.chapter_number}")
@@ -218,6 +311,8 @@ defmodule BibleReaderWeb.ChapterLive do
     |> assign(:read_count, read_count)
     |> assign(:last_read_label, last_read_label)
     |> assign(:history, history)
+    |> assign(:prev_chapter, prev_chapter)
+    |> assign(:next_chapter, next_chapter)
     |> assign(:note_form, to_form(%{"body" => body}, as: :note))
     |> assign(:note_saved, false)
   end
